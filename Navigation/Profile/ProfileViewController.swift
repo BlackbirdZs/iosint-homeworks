@@ -122,7 +122,13 @@ class ProfileViewController: UIViewController {
     }
 
     func setupView() {
-        view.backgroundColor = .systemBackground
+        #if DEBUG
+        view.backgroundColor = .systemBlue
+        tableView.backgroundColor = .systemBlue
+        #else
+        view.backgroundColor = .systemGreen
+        tableView.backgroundColor = .systemGreen
+        #endif
     }
 
     func setupAvatarForTap() {

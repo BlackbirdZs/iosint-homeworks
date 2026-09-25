@@ -9,9 +9,8 @@ import Foundation
 import UIKit
 
 class CurrentUserService: UserService {
-    
     let user: User
-    
+
     init(user: User) {
         self.user = user
     }
@@ -20,7 +19,7 @@ class CurrentUserService: UserService {
         if user.login == login {
             return user
         } else {
-           return nil
+            return nil
         }
     }
 }

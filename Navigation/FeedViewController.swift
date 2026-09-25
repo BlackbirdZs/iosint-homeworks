@@ -5,8 +5,8 @@
 //  Created by Anton Kruglov on 31.07.2026.
 //
 
-import UIKit
 import StorageService
+import UIKit
 
 class FeedViewController: UIViewController {
     private lazy var firstButton: UIButton = {

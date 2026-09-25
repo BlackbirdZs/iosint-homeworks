@@ -11,7 +11,7 @@ class ProfileViewController: UIViewController {
     let profileHeaderView = ProfileHeaderView()
     fileprivate let posts = FeedPost.make()
     private var avatarPreviousFrame: CGRect = .zero
-    
+
     var user: User? {
         didSet {
             if let user = user {
@@ -61,7 +61,6 @@ class ProfileViewController: UIViewController {
 
         avatarPreviousFrame = avatar.convert(avatar.bounds, to: view)
         avatarImageView.layer.cornerRadius = avatarPreviousFrame.height / 2
-    
 
         avatarImageView.isHidden = false
         avatarImageView.frame = avatarPreviousFrame
@@ -129,7 +128,7 @@ class ProfileViewController: UIViewController {
         setupAvatarForTap()
         configureUser()
     }
-    
+
     func configureUser() {
         if let user = user {
             profileHeaderView.configure(with: user)
@@ -138,11 +137,11 @@ class ProfileViewController: UIViewController {
 
     func setupView() {
         #if DEBUG
-        view.backgroundColor = .systemBlue
-        tableView.backgroundColor = .systemBlue
+            view.backgroundColor = .systemBlue
+            tableView.backgroundColor = .systemBlue
         #else
-        view.backgroundColor = .systemGreen
-        tableView.backgroundColor = .systemGreen
+            view.backgroundColor = .systemGreen
+            tableView.backgroundColor = .systemGreen
         #endif
     }
 

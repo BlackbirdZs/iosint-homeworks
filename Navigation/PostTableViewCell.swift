@@ -7,6 +7,7 @@
 
 import Foundation
 import UIKit
+import iOSIntPackage
 
 class PostTableViewCell: UITableViewCell {
     override init(
@@ -117,10 +118,14 @@ class PostTableViewCell: UITableViewCell {
 
     func configure(with post: FeedPost) {
         aboveLabel.text = post.author
-        imageField.image = UIImage(named: post.image)
         descriptionField.text = post.description
         likesLabel.text = "Likes \(post.likes)"
         viewsLabel.text = "Views \(post.views)"
+        
+        guard let originalImage = UIImage(named: post.image) else { return }
+        ImageProcessor().processImage(sourceImage: originalImage, filter: .bloom(intensity: 0.5)) {
+            procesedImage in self.imageField.image = procesedImage
+        }
     }
 
     private func addSubviewsPost() {

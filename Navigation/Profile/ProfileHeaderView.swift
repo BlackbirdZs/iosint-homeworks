@@ -128,4 +128,10 @@ class ProfileHeaderView: UIView {
     @objc func statusTextChanged(_ textField: UITextField) {
         statusText = textField.text ?? ""
     }
+    
+    func configure(with user: User) {
+        avatarImageView.image = user.avatar
+        fullNameLabel.text = user.fullName
+        statusLabel.text = user.status
+    }
 }

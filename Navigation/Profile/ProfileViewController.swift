@@ -11,6 +11,14 @@ class ProfileViewController: UIViewController {
     let profileHeaderView = ProfileHeaderView()
     fileprivate let posts = FeedPost.make()
     private var avatarPreviousFrame: CGRect = .zero
+    
+    var user: User? {
+        didSet {
+            if let user = user {
+                profileHeaderView.configure(with: user)
+            }
+        }
+    }
 
     private lazy var avatarBackgroundView: UIView = {
         let avatarBackgroundView = UIView()
@@ -119,6 +127,13 @@ class ProfileViewController: UIViewController {
         setupConstraints()
         tuneTableView()
         setupAvatarForTap()
+        configureUser()
+    }
+    
+    func configureUser() {
+        if let user = user {
+            profileHeaderView.configure(with: user)
+        }
     }
 
     func setupView() {

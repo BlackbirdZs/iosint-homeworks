@@ -103,8 +103,14 @@ class LogInViewController: UIViewController {
         status: "All good",
         avatar: UIImage(named: "check") ?? UIImage()
     )
-
-    lazy var userService: UserService = CurrentUserService(user: someUser)
+    
+    private lazy var userService: UserService = {
+        #if DEBUG
+        return TestUserService()
+        #else
+        return CurrentUserService(user: someUser)
+        #endif
+    }()
 
     override func viewDidLoad() {
         super.viewDidLoad()

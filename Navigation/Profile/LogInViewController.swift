@@ -97,6 +97,15 @@ class LogInViewController: UIViewController {
         return passwordTextField
     }()
 
+    private let someUser = User(
+        login: "login",
+        fullName: "Tony Smith",
+        status: "All good",
+        avatar: UIImage(named: "check") ?? UIImage()
+    )
+
+    lazy var userService: UserService = CurrentUserService(user: someUser)
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -211,8 +220,35 @@ class LogInViewController: UIViewController {
         ])
     }
 
+    private func showAlert(message: String) {
+        let alert = UIAlertController(
+            title: "Attention",
+            message: message,
+            preferredStyle: .alert
+        )
+        let doneAction = UIAlertAction(
+            title: "Done",
+            style: .default
+        )
+        alert.addAction(doneAction)
+        present(alert, animated: true)
+    }
+
     @objc func loginButtonPressed() {
-        let profileViewController = ProfileViewController()
-        navigationController?.pushViewController(profileViewController, animated: true)
+        guard let loginText = loginTextField.text else { return }
+        let cleanedLogin = loginText.trimmingCharacters(in: .whitespaces)
+
+        if cleanedLogin.isEmpty {
+            showAlert(message: "Login field is empty")
+        } else {
+            let user = userService.checkLogin(login: cleanedLogin)
+            if let user = user {
+                let profileVC = ProfileViewController()
+                profileVC.user = user
+                navigationController?.pushViewController(profileVC, animated: true)
+            } else {
+                showAlert(message: "Incorrect login")
+            }
+        }
     }
 }

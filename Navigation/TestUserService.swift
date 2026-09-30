@@ -11,7 +11,7 @@ import UIKit
 class TestUserService: UserService {
     
     let testUser = User(
-        login: "testUser",
+        login: "admin",
         fullName: "Test User",
         status: "Test",
         avatar: UIImage(named: "avatar") ?? UIImage()

@@ -19,8 +19,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         feedViewController.title = "User feed"
         feedViewController.view.backgroundColor = .systemBlue
 
+        let factory = MyLoginFactory()
         let loginViewController = LogInViewController()
         loginViewController.view.backgroundColor = .white
+        loginViewController.loginDelegate = factory.makeLoginInspector()
 
         let tabBarController = UITabBarController()
 

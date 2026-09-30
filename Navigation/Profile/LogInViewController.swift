@@ -78,6 +78,7 @@ class LogInViewController: UIViewController {
         let loginTextField = UITextField()
         loginTextField.translatesAutoresizingMaskIntoConstraints = false
         loginTextField.placeholder = "Email or phone"
+        loginTextField.text = "admin"
         loginTextField.font = .systemFont(ofSize: 16)
         loginTextField.textColor = .black
         loginTextField.tintColor = UIColor(named: "VKColor")
@@ -89,6 +90,7 @@ class LogInViewController: UIViewController {
         let passwordTextField = UITextField()
         passwordTextField.translatesAutoresizingMaskIntoConstraints = false
         passwordTextField.placeholder = "Password"
+        passwordTextField.text = "admin"
         passwordTextField.font = .systemFont(ofSize: 16)
         passwordTextField.textColor = .black
         passwordTextField.tintColor = UIColor(named: "VKColor")
@@ -97,18 +99,20 @@ class LogInViewController: UIViewController {
         return passwordTextField
     }()
 
+    var loginDelegate: LoginViewControllerDelegate?
+
     private let someUser = User(
-        login: "login",
+        login: "admin",
         fullName: "Tony Smith",
         status: "All good",
-        avatar: UIImage(named: "check") ?? UIImage()
+        avatar: UIImage(named: "avatar") ?? UIImage()
     )
-    
+
     private lazy var userService: UserService = {
         #if DEBUG
-        return TestUserService()
+            return TestUserService()
         #else
-        return CurrentUserService(user: someUser)
+            return CurrentUserService(user: someUser)
         #endif
     }()
 
@@ -242,18 +246,25 @@ class LogInViewController: UIViewController {
 
     @objc func loginButtonPressed() {
         guard let loginText = loginTextField.text else { return }
+        guard let passwordText = passwordTextField.text else { return }
         let cleanedLogin = loginText.trimmingCharacters(in: .whitespaces)
+        let cleanedPassword = passwordText.trimmingCharacters(in: .whitespaces)
 
-        if cleanedLogin.isEmpty {
-            showAlert(message: "Login field is empty")
+        if cleanedLogin.isEmpty || cleanedPassword.isEmpty {
+            showAlert(message: "Login or password field is empty")
         } else {
-            let user = userService.checkLogin(login: cleanedLogin)
-            if let user = user {
-                let profileVC = ProfileViewController()
-                profileVC.user = user
-                navigationController?.pushViewController(profileVC, animated: true)
+            let isValid = loginDelegate?.check(login: cleanedLogin, password: cleanedPassword)
+            if isValid != true {
+                showAlert(message: "Invalid login or password")
             } else {
-                showAlert(message: "Incorrect login")
+                let user = userService.checkLogin(login: cleanedLogin)
+                if let user = user {
+                    let profileVC = ProfileViewController()
+                    profileVC.user = user
+                    navigationController?.pushViewController(profileVC, animated: true)
+                } else {
+                    showAlert(message: "User not found")
+                }
             }
         }
     }

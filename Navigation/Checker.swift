@@ -20,10 +20,6 @@ class Checker {
     private let password: String = "admin"
 
     func check(login: String, password: String) -> Bool {
-        if login == self.login && password == self.password {
-            return true
-        } else {
-            return false
-        }
+        login == self.login && password == self.password
     }
 }

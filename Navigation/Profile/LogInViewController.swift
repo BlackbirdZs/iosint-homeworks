@@ -78,6 +78,7 @@ class LogInViewController: UIViewController {
         let loginTextField = UITextField()
         loginTextField.translatesAutoresizingMaskIntoConstraints = false
         loginTextField.placeholder = "Email or phone"
+        loginTextField.text = "admin"
         loginTextField.font = .systemFont(ofSize: 16)
         loginTextField.textColor = .black
         loginTextField.tintColor = UIColor(named: "VKColor")
@@ -89,6 +90,7 @@ class LogInViewController: UIViewController {
         let passwordTextField = UITextField()
         passwordTextField.translatesAutoresizingMaskIntoConstraints = false
         passwordTextField.placeholder = "Password"
+        passwordTextField.text = "admin"
         passwordTextField.font = .systemFont(ofSize: 16)
         passwordTextField.textColor = .black
         passwordTextField.tintColor = UIColor(named: "VKColor")
@@ -100,10 +102,10 @@ class LogInViewController: UIViewController {
     var loginDelegate: LoginViewControllerDelegate?
 
     private let someUser = User(
-        login: "login",
+        login: "admin",
         fullName: "Tony Smith",
         status: "All good",
-        avatar: UIImage(named: "check") ?? UIImage()
+        avatar: UIImage(named: "avatar") ?? UIImage()
     )
 
     private lazy var userService: UserService = {

@@ -49,7 +49,7 @@ class PhotosCollectionViewCell: UICollectionViewCell {
         ])
     }
 
-    func configure(imageName: String) {
-        collectionImageView.image = UIImage(named: imageName)
+    func configure(image: UIImage) {
+        collectionImageView.image = image
     }
 }

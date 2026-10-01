@@ -7,9 +7,13 @@
 
 import Foundation
 import UIKit
+import iOSIntPackage
 
-class PhotosViewController: UIViewController {
+class PhotosViewController: UIViewController, ImageLibrarySubscriber {
+
     let photos = ["pic1", "pic2", "pic3", "pic4", "pic5", "pic6", "pic7", "pic8", "pic9", "pic10", "pic11", "pic12", "pic13", "pic14", "pic15", "pic16", "pic17", "pic18", "pic19", "pic20"]
+    
+    var images: [UIImage] = []
 
     private let photosCollectionView: UICollectionView = {
         let viewLayout = UICollectionViewFlowLayout()
@@ -26,6 +30,8 @@ class PhotosViewController: UIViewController {
 
         return collectionView
     }()
+    
+    private let facade = ImagePublisherFacade()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -33,8 +39,22 @@ class PhotosViewController: UIViewController {
         setupView()
         setupCollectionView()
         setupLayouts()
+        subToFacade()
+        setupTimer()
     }
-
+    
+    func subToFacade() {
+        facade.subscribe(self)
+    }
+    
+    func setupTimer() {
+        facade.addImagesWithTimer(time: 0.5, repeat: 10)
+    }
+    
+    func removeSub() {
+        facade.removeSubscription(for: self)
+    }
+    
     func setupView() {
         view.backgroundColor = .systemGray6
         photosCollectionView.backgroundColor = .white
@@ -111,4 +131,15 @@ extension PhotosViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         Constants.spacing
     }
+}
+
+extension PhotosViewController {
+    
+    func receive(images: [UIImage]) {
+        images.
+    }
+    
+ 
+    
+    
 }

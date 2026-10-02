@@ -6,10 +6,11 @@
 //
 
 import Foundation
+import iOSIntPackage
 import UIKit
 
-class PhotosViewController: UIViewController {
-    let photos = ["pic1", "pic2", "pic3", "pic4", "pic5", "pic6", "pic7", "pic8", "pic9", "pic10", "pic11", "pic12", "pic13", "pic14", "pic15", "pic16", "pic17", "pic18", "pic19", "pic20"]
+class PhotosViewController: UIViewController, ImageLibrarySubscriber {
+    var images: [UIImage] = []
 
     private let photosCollectionView: UICollectionView = {
         let viewLayout = UICollectionViewFlowLayout()
@@ -27,12 +28,29 @@ class PhotosViewController: UIViewController {
         return collectionView
     }()
 
+    private let facade = ImagePublisherFacade()
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
         setupView()
         setupCollectionView()
         setupLayouts()
+        subToFacade()
+        setupTimer()
+    }
+
+    func subToFacade() {
+        facade.subscribe(self)
+    }
+
+    func setupTimer() {
+        let collectionImages = (1 ... 20).compactMap { UIImage(named: "pic\($0)") }
+        facade.addImagesWithTimer(time: 0.5, repeat: 20, userImages: collectionImages)
+    }
+
+    func removeSub() {
+        facade.removeSubscription(for: self)
     }
 
     func setupView() {
@@ -68,25 +86,24 @@ class PhotosViewController: UIViewController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         navigationController?.navigationBar.isHidden = true
+        removeSub()
     }
 }
 
-// + delegate/flow
 extension PhotosViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return photos.count
+        return images.count
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PhotosCollectionViewCell", for: indexPath) as? PhotosCollectionViewCell else {
             fatalError("could not dequeueReusableCell")
         }
-        cell.configure(imageName: photos[indexPath.item])
+        cell.configure(image: images[indexPath.item])
         return cell
     }
 }
 
-// consts/funcs
 enum Constants {
     static let spacing: CGFloat = 8.0
 }
@@ -110,5 +127,12 @@ extension PhotosViewController: UICollectionViewDelegateFlowLayout {
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         Constants.spacing
+    }
+}
+
+extension PhotosViewController {
+    func receive(images: [UIImage]) {
+        self.images = images
+        photosCollectionView.reloadData()
     }
 }

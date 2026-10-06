@@ -13,9 +13,20 @@ class PostViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        title = post?.title
-        view.backgroundColor = .brown
+        setupTitle()
+        setupView()
+        setupNavBar()
+    }
 
+    func setupTitle() {
+        title = post?.title
+    }
+
+    func setupView() {
+        view.backgroundColor = .brown
+    }
+
+    func setupNavBar() {
         navigationItem.rightBarButtonItem = UIBarButtonItem(
             title: "Info",
             style: .plain,

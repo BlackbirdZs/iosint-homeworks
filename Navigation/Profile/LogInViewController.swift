@@ -33,26 +33,22 @@ class LogInViewController: UIViewController {
         }
     }
 
-    lazy var loginButton: UIButton = {
-        let loginButton = UIButton()
+    lazy var loginButton: CustomButton = {
+        let loginButton = CustomButton(title: "Log in", titleColor: .white)
         loginButton.translatesAutoresizingMaskIntoConstraints = false
-        loginButton.setTitle("Log In", for: .normal)
-        loginButton.setTitleColor(.white, for: .normal)
         loginButton.layer.cornerRadius = 10
         loginButton.clipsToBounds = true
-
+        
         guard let bluePixel = UIImage(named: "bluePixel") else {
             return loginButton
         }
-
         let dimmedBluePixel = imageWithAlpha(bluePixel, alpha: 0.8)
-
         loginButton.setBackgroundImage(bluePixel, for: .normal)
         loginButton.setBackgroundImage(dimmedBluePixel, for: .highlighted)
         loginButton.setBackgroundImage(dimmedBluePixel, for: .selected)
         loginButton.setBackgroundImage(dimmedBluePixel, for: .disabled)
-
-        loginButton.addTarget(self, action: #selector(loginButtonPressed), for: .touchUpInside)
+    
+        loginButton.tapOnButton = { [weak self] in self?.loginButtonPressed() }
         return loginButton
     }()
 

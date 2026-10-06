@@ -9,18 +9,17 @@ import StorageService
 import UIKit
 
 class FeedViewController: UIViewController {
-    private lazy var firstButton: UIButton = {
-        let firstButton = UIButton()
+    
+    private lazy var firstButton: CustomButton = {
+        let firstButton = CustomButton(title: "View the post", titleColor: .white)
         firstButton.translatesAutoresizingMaskIntoConstraints = false
-        firstButton.setTitle("View the post", for: .normal)
 
         return firstButton
     }()
 
-    private lazy var secondButton: UIButton = {
-        let secondButton = UIButton()
+    private lazy var secondButton: CustomButton = {
+        let secondButton = CustomButton(title: "View the post", titleColor: .white)
         secondButton.translatesAutoresizingMaskIntoConstraints = false
-        secondButton.setTitle("View the post", for: .normal)
 
         return secondButton
     }()

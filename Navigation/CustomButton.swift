@@ -33,5 +33,3 @@ class CustomButton: UIButton {
         tapOnButton?()
     }
 }
-
-

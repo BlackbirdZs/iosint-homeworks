@@ -8,12 +8,11 @@
 import UIKit
 
 class InfoViewController: UIViewController {
-    private lazy var infoButton: UIButton = {
-        let button = UIButton()
+    
+    private lazy var infoButton: CustomButton = {
+        let button = CustomButton(title: "Hi! This is a new screen.", titleColor: .systemBlue)
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setTitle("Hi! This is a new screen.", for: .normal)
-        button.setTitleColor(.systemBlue, for: .normal)
-
+     
         return button
     }()
 

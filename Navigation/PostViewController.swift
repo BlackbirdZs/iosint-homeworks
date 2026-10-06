@@ -15,7 +15,7 @@ class PostViewController: UIViewController {
         super.viewDidLoad()
         setupTitle()
         setupView()
-        setupNavBar()
+        setupNavBarItem()
     }
 
     func setupTitle() {
@@ -26,7 +26,7 @@ class PostViewController: UIViewController {
         view.backgroundColor = .brown
     }
 
-    func setupNavBar() {
+    func setupNavBarItem() {
         navigationItem.rightBarButtonItem = UIBarButtonItem(
             title: "Info",
             style: .plain,

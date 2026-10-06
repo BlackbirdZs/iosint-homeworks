@@ -2,12 +2,14 @@
 import UIKit
 
 class LogInViewController: UIViewController {
+    
     private lazy var scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         scrollView.showsVerticalScrollIndicator = true
         scrollView.showsHorizontalScrollIndicator = false
         scrollView.backgroundColor = .white
+        
         return scrollView
     }()
 
@@ -23,6 +25,7 @@ class LogInViewController: UIViewController {
         let labelImageView = UIImageView()
         labelImageView.translatesAutoresizingMaskIntoConstraints = false
         labelImageView.image = UIImage(named: "VKLogo")
+        
         return labelImageView
     }()
 
@@ -49,6 +52,7 @@ class LogInViewController: UIViewController {
         loginButton.setBackgroundImage(dimmedBluePixel, for: .disabled)
     
         loginButton.tapOnButton = { [weak self] in self?.loginButtonPressed() }
+        
         return loginButton
     }()
 
@@ -60,6 +64,7 @@ class LogInViewController: UIViewController {
         fieldsContainerView.layer.borderWidth = 0.5
         fieldsContainerView.layer.cornerRadius = 10
         fieldsContainerView.clipsToBounds = true
+        
         return fieldsContainerView
     }()
 
@@ -67,6 +72,7 @@ class LogInViewController: UIViewController {
         let containerViewLine = UIView()
         containerViewLine.translatesAutoresizingMaskIntoConstraints = false
         containerViewLine.backgroundColor = .systemGray4
+        
         return containerViewLine
     }()
 
@@ -79,6 +85,7 @@ class LogInViewController: UIViewController {
         loginTextField.textColor = .black
         loginTextField.tintColor = UIColor(named: "VKColor")
         loginTextField.autocapitalizationType = .none
+        
         return loginTextField
     }()
 
@@ -90,8 +97,8 @@ class LogInViewController: UIViewController {
         passwordTextField.font = .systemFont(ofSize: 16)
         passwordTextField.textColor = .black
         passwordTextField.tintColor = UIColor(named: "VKColor")
-
         passwordTextField.isSecureTextEntry = true
+        
         return passwordTextField
     }()
 

@@ -40,11 +40,9 @@ class ProfileHeaderView: UIView {
         return statusLabel
     }()
 
-    lazy var setStatusButton: UIButton = {
-        let setStatusButton = UIButton()
+    lazy var setStatusButton: CustomButton = {
+        let setStatusButton = CustomButton(title: "Set status", titleColor: .white)
         setStatusButton.translatesAutoresizingMaskIntoConstraints = false
-        setStatusButton.setTitle("Set status", for: .normal)
-        setStatusButton.setTitleColor(.white, for: .normal)
         setStatusButton.backgroundColor = .systemBlue
         setStatusButton.layer.cornerRadius = 4
         setStatusButton.layer.shadowColor = UIColor.black.cgColor
@@ -52,7 +50,7 @@ class ProfileHeaderView: UIView {
         setStatusButton.layer.shadowOffset = .init(width: 4, height: 4)
         setStatusButton.layer.shadowOpacity = 0.7
 
-        setStatusButton.addTarget(self, action: #selector(buttonPressed), for: .touchUpInside)
+        setStatusButton.tapOnButton = { [ weak self ] in self?.buttonPressed() }
 
         return setStatusButton
     }()
@@ -95,12 +93,12 @@ class ProfileHeaderView: UIView {
 
     private func setupConstraints() {
         NSLayoutConstraint.activate([
-            avatarImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16.0),
-            avatarImageView.topAnchor.constraint(equalTo: topAnchor, constant: 16.0),
+            avatarImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
+            avatarImageView.topAnchor.constraint(equalTo: topAnchor, constant: 16),
             avatarImageView.widthAnchor.constraint(equalToConstant: 100),
             avatarImageView.heightAnchor.constraint(equalToConstant: 100),
 
-            fullNameLabel.leadingAnchor.constraint(equalTo: avatarImageView.trailingAnchor, constant: 16.0),
+            fullNameLabel.leadingAnchor.constraint(equalTo: avatarImageView.trailingAnchor, constant: 16),
             fullNameLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
             fullNameLabel.topAnchor.constraint(equalTo: topAnchor, constant: 11),
 

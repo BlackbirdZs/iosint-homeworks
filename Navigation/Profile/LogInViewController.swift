@@ -2,12 +2,14 @@
 import UIKit
 
 class LogInViewController: UIViewController {
+    
     private lazy var scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         scrollView.showsVerticalScrollIndicator = true
         scrollView.showsHorizontalScrollIndicator = false
         scrollView.backgroundColor = .white
+        
         return scrollView
     }()
 
@@ -23,6 +25,7 @@ class LogInViewController: UIViewController {
         let labelImageView = UIImageView()
         labelImageView.translatesAutoresizingMaskIntoConstraints = false
         labelImageView.image = UIImage(named: "VKLogo")
+        
         return labelImageView
     }()
 
@@ -33,26 +36,23 @@ class LogInViewController: UIViewController {
         }
     }
 
-    lazy var loginButton: UIButton = {
-        let loginButton = UIButton()
+    lazy var loginButton: CustomButton = {
+        let loginButton = CustomButton(title: "Log in", titleColor: .white)
         loginButton.translatesAutoresizingMaskIntoConstraints = false
-        loginButton.setTitle("Log In", for: .normal)
-        loginButton.setTitleColor(.white, for: .normal)
         loginButton.layer.cornerRadius = 10
         loginButton.clipsToBounds = true
-
+        
         guard let bluePixel = UIImage(named: "bluePixel") else {
             return loginButton
         }
-
         let dimmedBluePixel = imageWithAlpha(bluePixel, alpha: 0.8)
-
         loginButton.setBackgroundImage(bluePixel, for: .normal)
         loginButton.setBackgroundImage(dimmedBluePixel, for: .highlighted)
         loginButton.setBackgroundImage(dimmedBluePixel, for: .selected)
         loginButton.setBackgroundImage(dimmedBluePixel, for: .disabled)
-
-        loginButton.addTarget(self, action: #selector(loginButtonPressed), for: .touchUpInside)
+    
+        loginButton.tapOnButton = { [weak self] in self?.loginButtonPressed() }
+        
         return loginButton
     }()
 
@@ -64,6 +64,7 @@ class LogInViewController: UIViewController {
         fieldsContainerView.layer.borderWidth = 0.5
         fieldsContainerView.layer.cornerRadius = 10
         fieldsContainerView.clipsToBounds = true
+        
         return fieldsContainerView
     }()
 
@@ -71,6 +72,7 @@ class LogInViewController: UIViewController {
         let containerViewLine = UIView()
         containerViewLine.translatesAutoresizingMaskIntoConstraints = false
         containerViewLine.backgroundColor = .systemGray4
+        
         return containerViewLine
     }()
 
@@ -83,6 +85,7 @@ class LogInViewController: UIViewController {
         loginTextField.textColor = .black
         loginTextField.tintColor = UIColor(named: "VKColor")
         loginTextField.autocapitalizationType = .none
+        
         return loginTextField
     }()
 
@@ -94,8 +97,8 @@ class LogInViewController: UIViewController {
         passwordTextField.font = .systemFont(ofSize: 16)
         passwordTextField.textColor = .black
         passwordTextField.tintColor = UIColor(named: "VKColor")
-
         passwordTextField.isSecureTextEntry = true
+        
         return passwordTextField
     }()
 

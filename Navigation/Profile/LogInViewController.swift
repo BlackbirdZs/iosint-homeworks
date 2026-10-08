@@ -38,9 +38,7 @@ class LogInViewController: UIViewController {
 
     lazy var loginButton: CustomButton = {
         let loginButton = CustomButton(title: "Log in", titleColor: .white)
-        loginButton.translatesAutoresizingMaskIntoConstraints = false
         loginButton.layer.cornerRadius = 10
-        loginButton.clipsToBounds = true
         
         guard let bluePixel = UIImage(named: "bluePixel") else {
             return loginButton

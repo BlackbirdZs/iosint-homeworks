@@ -11,7 +11,6 @@ class InfoViewController: UIViewController {
     
     private lazy var infoButton: CustomButton = {
         let button = CustomButton(title: "Hi! This is a new screen.", titleColor: .systemBlue)
-        button.translatesAutoresizingMaskIntoConstraints = false
      
         return button
     }()

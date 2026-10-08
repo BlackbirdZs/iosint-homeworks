@@ -10,6 +10,7 @@ import UIKit
 
 class FeedViewController: UIViewController {
     var feedModel = FeedModel()
+    private let viewModel = FeedViewModel()
 
     private lazy var firstButton: CustomButton = {
         let firstButton = CustomButton(title: "View the post", titleColor: .white)
@@ -148,7 +149,21 @@ class FeedViewController: UIViewController {
 
     @objc func guessButtonTapped() {
         guard let feedText = feedTextField.text else { return }
-        let cleanedFeedText = feedText.trimmingCharacters(in: .whitespaces)
+        viewModel.checkWord(feedText)
+    }
+    
+    func setupBinding() {
+        viewModel.onResult = { [weak self] isValid in
+            self?.handle
+            
+        }
+        
+        
+        
+    }
+    
+    @objc func guessButtonTapped() {
+        guard let feedText = feedTextField.text else { return }
         if cleanedFeedText.isEmpty {
             showAlert(message: "Please, tell us the secret word.")
             checkLabel.backgroundColor = .yellow
@@ -163,4 +178,6 @@ class FeedViewController: UIViewController {
             showAlert(message: "Incorrect secret word. You can try again.")
         }
     }
+    
+    
 }

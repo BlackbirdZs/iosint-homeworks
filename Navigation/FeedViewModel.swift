@@ -11,13 +11,13 @@ class FeedViewModel {
     private let model = FeedModel()
 
     var onResult: ((Bool) -> Void)?
-    var emptyInput: (() -> Void)?
+    var onEmptyInput: (() -> Void)?
 
     func checkWord(_ text: String) {
         let cleanedText = text.trimmingCharacters(in: .whitespaces)
 
         if cleanedText.isEmpty {
-            emptyInput?()
+            onEmptyInput?()
             return
         } else {
             let isValid = model.check(word: cleanedText)

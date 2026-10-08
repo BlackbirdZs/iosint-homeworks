@@ -9,7 +9,6 @@ import StorageService
 import UIKit
 
 class FeedViewController: UIViewController {
-    var feedModel = FeedModel()
     private let viewModel = FeedViewModel()
 
     private lazy var firstButton: CustomButton = {
@@ -83,6 +82,7 @@ class FeedViewController: UIViewController {
         addSubviews()
         setupConstraints()
         setupButtonActions()
+        setupBinding()
     }
 
     func setupView() {
@@ -151,25 +151,17 @@ class FeedViewController: UIViewController {
         guard let feedText = feedTextField.text else { return }
         viewModel.checkWord(feedText)
     }
-    
+
     func setupBinding() {
         viewModel.onResult = { [weak self] isValid in
-            self?.handle
-            
+            self?.handleResult(isValid: isValid)
         }
-        
-        
-        
+        viewModel.onEmptyInput = { [weak self] in
+            self?.handleEmptyInput()
+        }
     }
-    
-    @objc func guessButtonTapped() {
-        guard let feedText = feedTextField.text else { return }
-        if cleanedFeedText.isEmpty {
-            showAlert(message: "Please, tell us the secret word.")
-            checkLabel.backgroundColor = .yellow
-            return
-        }
-        let isValid = feedModel.check(word: cleanedFeedText)
+
+    private func handleResult(isValid: Bool) {
         if isValid {
             checkLabel.backgroundColor = .green
             showAlert(message: "You know the secret word, well done!")
@@ -178,6 +170,9 @@ class FeedViewController: UIViewController {
             showAlert(message: "Incorrect secret word. You can try again.")
         }
     }
-    
-    
+
+    private func handleEmptyInput() {
+        showAlert(message: "Please, tell us the secret word.")
+        checkLabel.backgroundColor = .yellow
+    }
 }

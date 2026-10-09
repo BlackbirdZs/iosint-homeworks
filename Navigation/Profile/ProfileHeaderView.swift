@@ -42,7 +42,6 @@ class ProfileHeaderView: UIView {
 
     lazy var setStatusButton: CustomButton = {
         let setStatusButton = CustomButton(title: "Set status", titleColor: .white)
-        setStatusButton.translatesAutoresizingMaskIntoConstraints = false
         setStatusButton.backgroundColor = .systemBlue
         setStatusButton.layer.cornerRadius = 4
         setStatusButton.layer.shadowColor = UIColor.black.cgColor

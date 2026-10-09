@@ -19,6 +19,9 @@ class CustomButton: UIButton {
         self.title = title
         self.titleColor = titleColor
         super.init(frame: .zero)
+        
+        translatesAutoresizingMaskIntoConstraints = false
+        clipsToBounds = true
 
         setTitle(title, for: .normal)
         setTitleColor(titleColor, for: .normal)

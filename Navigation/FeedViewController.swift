@@ -9,18 +9,16 @@ import StorageService
 import UIKit
 
 class FeedViewController: UIViewController {
-    var feedModel = FeedModel()
+    private let viewModel = FeedViewModel()
 
     private lazy var firstButton: CustomButton = {
         let firstButton = CustomButton(title: "View the post", titleColor: .white)
-        firstButton.translatesAutoresizingMaskIntoConstraints = false
 
         return firstButton
     }()
 
     private lazy var secondButton: CustomButton = {
         let secondButton = CustomButton(title: "View the post", titleColor: .white)
-        secondButton.translatesAutoresizingMaskIntoConstraints = false
 
         return secondButton
     }()
@@ -56,8 +54,6 @@ class FeedViewController: UIViewController {
 
     private lazy var checkGuessButton: CustomButton = {
         let checkGuessButton = CustomButton(title: "Guess the secret word", titleColor: .white)
-        checkGuessButton.translatesAutoresizingMaskIntoConstraints = false
-        checkGuessButton.clipsToBounds = true
         checkGuessButton.backgroundColor = .systemCyan
         checkGuessButton.layer.cornerRadius = 5
         checkGuessButton.titleLabel?.font = UIFont.systemFont(ofSize: 17, weight: .regular)
@@ -82,6 +78,7 @@ class FeedViewController: UIViewController {
         addSubviews()
         setupConstraints()
         setupButtonActions()
+        setupBinding()
     }
 
     func setupView() {
@@ -148,13 +145,19 @@ class FeedViewController: UIViewController {
 
     @objc func guessButtonTapped() {
         guard let feedText = feedTextField.text else { return }
-        let cleanedFeedText = feedText.trimmingCharacters(in: .whitespaces)
-        if cleanedFeedText.isEmpty {
-            showAlert(message: "Please, tell us the secret word.")
-            checkLabel.backgroundColor = .yellow
-            return
+        viewModel.checkWord(feedText)
+    }
+
+    func setupBinding() {
+        viewModel.onResult = { [weak self] isValid in
+            self?.handleResult(isValid: isValid)
         }
-        let isValid = feedModel.check(word: cleanedFeedText)
+        viewModel.onEmptyInput = { [weak self] in
+            self?.handleEmptyInput()
+        }
+    }
+
+    private func handleResult(isValid: Bool) {
         if isValid {
             checkLabel.backgroundColor = .green
             showAlert(message: "You know the secret word, well done!")
@@ -162,5 +165,10 @@ class FeedViewController: UIViewController {
             checkLabel.backgroundColor = .red
             showAlert(message: "Incorrect secret word. You can try again.")
         }
+    }
+
+    private func handleEmptyInput() {
+        showAlert(message: "Please, tell us the secret word.")
+        checkLabel.backgroundColor = .yellow
     }
 }

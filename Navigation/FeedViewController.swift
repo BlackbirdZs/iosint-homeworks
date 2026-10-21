@@ -5,11 +5,11 @@
 //  Created by Anton Kruglov on 31.07.2026.
 //
 
-import StorageService
 import UIKit
 
 class FeedViewController: UIViewController {
     private let viewModel = FeedViewModel()
+    weak var coordinator: FeedCoordinator?
 
     private lazy var firstButton: CustomButton = {
         let firstButton = CustomButton(title: "View the post", titleColor: .white)
@@ -135,12 +135,8 @@ class FeedViewController: UIViewController {
         secondButton.addTarget(self, action: #selector(buttonPressed), for: .touchUpInside)
     }
 
-    let post = Post(title: "My post")
-
     @objc func buttonPressed() {
-        let postViewController = PostViewController()
-        postViewController.post = post
-        navigationController?.pushViewController(postViewController, animated: true)
+        coordinator?.start()
     }
 
     @objc func guessButtonTapped() {

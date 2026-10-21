@@ -18,14 +18,14 @@ class ProfileCoordinator: Coordinator {
     init(navigationController: UINavigationController) {
         self.navigationController = navigationController
     }
-    
+
     func start() {
-        let profileVC = ProfileViewController()
-        navigationController.pushViewController(profileVC, animated: true)
+        let photosVc = PhotosViewController()
+        navigationController.pushViewController(photosVc, animated: true)
     }
-    
+
     func didFinish() {
         parentCoordinator?.childCoordinators.removeAll { $0 === self }
-//some code to be added later
+        //some code here
     }
 }

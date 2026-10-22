@@ -5,11 +5,13 @@
 //  Created by Anton Kruglov on 31.07.2026.
 //
 
+import StorageService
 import UIKit
 
 class FeedViewController: UIViewController {
     private let viewModel = FeedViewModel()
     weak var coordinator: FeedCoordinator?
+    let post = Post(title: "My post")
 
     private lazy var firstButton: CustomButton = {
         let firstButton = CustomButton(title: "View the post", titleColor: .white)
@@ -82,7 +84,8 @@ class FeedViewController: UIViewController {
     }
 
     func setupView() {
-        view.backgroundColor = .blue
+        view.backgroundColor = .systemBlue
+        self.title = "User feed"
     }
 
     func addSubviews() {
@@ -136,7 +139,7 @@ class FeedViewController: UIViewController {
     }
 
     @objc func buttonPressed() {
-        coordinator?.start()
+        coordinator?.openPost(post)
     }
 
     @objc func guessButtonTapped() {

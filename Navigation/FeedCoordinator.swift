@@ -12,7 +12,6 @@ import UIKit
 class FeedCoordinator: Coordinator {
     var childCoordinators: [Coordinator] = []
     var navigationController: UINavigationController
-    let post = Post(title: "My post")
 
     weak var parentCoordinator: AppCoordinator?
 
@@ -21,13 +20,14 @@ class FeedCoordinator: Coordinator {
     }
 
     func start() {
-        let postVC = PostViewController()
-        postVC.post = post
-        navigationController.pushViewController(postVC, animated: true)
+        let feedVC = FeedViewController()
+        feedVC.coordinator = self
+        navigationController.pushViewController(feedVC, animated: false)
     }
 
-    func finish() {
-        parentCoordinator?.childCoordinators.removeAll { $0 === self }
-        // some code
+    func openPost(_ post: Post) {
+        let postVc = PostViewController()
+        postVc.post = post
+        navigationController.pushViewController(postVc, animated: true)
     }
 }

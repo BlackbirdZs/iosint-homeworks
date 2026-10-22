@@ -3,6 +3,8 @@ import UIKit
 
 class LogInViewController: UIViewController {
     
+    weak var coordinator: LoginCoordinator?
+    
     private lazy var scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.translatesAutoresizingMaskIntoConstraints = false
@@ -260,9 +262,7 @@ class LogInViewController: UIViewController {
             } else {
                 let user = userService.checkLogin(login: cleanedLogin)
                 if let user = user {
-                    let profileVC = ProfileViewController()
-                    profileVC.user = user
-                    navigationController?.pushViewController(profileVC, animated: true)
+                    coordinator?.openProfile(user)
                 } else {
                     showAlert(message: "User not found")
                 }

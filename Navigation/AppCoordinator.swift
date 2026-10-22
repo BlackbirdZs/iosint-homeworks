@@ -48,4 +48,13 @@ class AppCoordinator: Coordinator {
         window.rootViewController = tabBarController
         window.makeKeyAndVisible()
     }
+
+    func showUser(_ user: User) {
+        tabBarController.selectedIndex = 1
+        guard let profileNavController = tabBarController.viewControllers?[1] as? UINavigationController,
+              let profileVC = profileNavController.viewControllers.first as? ProfileViewController else {
+            return
+        }
+        profileVC.user = user
+    }
 }

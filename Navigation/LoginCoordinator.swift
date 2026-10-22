@@ -28,9 +28,7 @@ class LoginCoordinator: Coordinator {
     }
 
     func openProfile(_ user: User) {
-        let profileVc = ProfileViewController()
-        profileVc.user = user
-        navigationController.setViewControllers([profileVc], animated: true)
+        parentCoordinator?.showUser(user)
         finish()
     }
 

@@ -86,6 +86,7 @@ extension PhotosViewController: UICollectionViewDataSource {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PhotosCollectionViewCell", for: indexPath) as? PhotosCollectionViewCell else {
             fatalError("could not dequeueReusableCell")
         }
+        cell.configure(imageName: photos[indexPath.row])
         return cell
     }
 }

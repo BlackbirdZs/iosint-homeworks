@@ -48,8 +48,5 @@ class PhotosCollectionViewCell: UICollectionViewCell {
             collectionImageView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
         ])
     }
-
-    func configure(image: UIImage) {
-        collectionImageView.image = image
-    }
+    func configure()
 }

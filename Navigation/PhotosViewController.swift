@@ -9,7 +9,10 @@ import Foundation
 import iOSIntPackage
 import UIKit
 
-class PhotosViewController: UIViewController, ImageLibrarySubscriber {
+class PhotosViewController: UIViewController {
+    
+    let photos = ["pic1", "pic2", "pic3", "pic4", "pic5", "pic6", "pic7", "pic8", "pic9", "pic10", "pic11", "pic12", "pic13", "pic14", "pic15", "pic16", "pic17", "pic18", "pic19", "pic20"]
+    
     var images: [UIImage] = []
 
     private let photosCollectionView: UICollectionView = {
@@ -36,21 +39,6 @@ class PhotosViewController: UIViewController, ImageLibrarySubscriber {
         setupView()
         setupCollectionView()
         setupLayouts()
-        subToFacade()
-        setupTimer()
-    }
-
-    func subToFacade() {
-        facade.subscribe(self)
-    }
-
-    func setupTimer() {
-        let collectionImages = (1 ... 20).compactMap { UIImage(named: "pic\($0)") }
-        facade.addImagesWithTimer(time: 0.5, repeat: 20, userImages: collectionImages)
-    }
-
-    func removeSub() {
-        facade.removeSubscription(for: self)
     }
 
     func setupView() {
@@ -86,20 +74,18 @@ class PhotosViewController: UIViewController, ImageLibrarySubscriber {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         navigationController?.navigationBar.isHidden = true
-        removeSub()
     }
 }
 
 extension PhotosViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return images.count
+        return photos.count
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PhotosCollectionViewCell", for: indexPath) as? PhotosCollectionViewCell else {
             fatalError("could not dequeueReusableCell")
         }
-        cell.configure(image: images[indexPath.item])
         return cell
     }
 }

@@ -46,8 +46,8 @@ class PhotosViewController: UIViewController {
 
         processor.processImagesOnThread(
             sourceImages: sourceImages,
-            filter: .bloom(intensity: 0.5),
-            qos: .userInitiated) { [weak self] resultCGImages in
+            filter: .noir,
+            qos: .userInteractive) { [weak self] resultCGImages in
                 let endTime = CFAbsoluteTimeGetCurrent()
                 let duration = endTime - startTime
                 print("The process time took \(duration) seconds")
@@ -143,3 +143,14 @@ extension PhotosViewController: UICollectionViewDelegateFlowLayout {
         Constants.spacing
     }
 }
+
+/*
+ Time results for the .noir filter and array of 20 pics:
+ 
+ QoS .userInteractive: ~0.40 sec (12 threads used)
+ QoS .userInitiated:   ~0.43 sec (11 threads used)
+ QoS .utility:         ~0.43 sec (13 threads used)
+ QoS .background:      ~1.29 sec (12 threads used)
+ 
+ Conclusion: The higher the priority (QoS), the faster the task is executed because the system allocates more CPU time to it, even if the number of threads remains the same (in my tests, it was around 11-13). For example, .userInteractive took 0.4 seconds, while .background took 1.29 seconds.
+ */

@@ -9,8 +9,10 @@ import Foundation
 import iOSIntPackage
 import UIKit
 
-class PhotosViewController: UIViewController, ImageLibrarySubscriber {
-    var images: [UIImage] = []
+class PhotosViewController: UIViewController {
+    let photos = ["pic1", "pic2", "pic3", "pic4", "pic5", "pic6", "pic7", "pic8", "pic9", "pic10", "pic11", "pic12", "pic13", "pic14", "pic15", "pic16", "pic17", "pic18", "pic19", "pic20"]
+
+    private var processedImages: [UIImage] = []
 
     private let photosCollectionView: UICollectionView = {
         let viewLayout = UICollectionViewFlowLayout()
@@ -28,29 +30,38 @@ class PhotosViewController: UIViewController, ImageLibrarySubscriber {
         return collectionView
     }()
 
-    private let facade = ImagePublisherFacade()
-
     override func viewDidLoad() {
         super.viewDidLoad()
 
         setupView()
         setupCollectionView()
         setupLayouts()
-        subToFacade()
-        setupTimer()
+        processImages()
     }
 
-    func subToFacade() {
-        facade.subscribe(self)
-    }
+    func processImages() {
+        let sourceImages: [UIImage] = photos.compactMap { UIImage(named: $0) }
+        let processor = ImageProcessor()
+        let startTime = CFAbsoluteTimeGetCurrent()
 
-    func setupTimer() {
-        let collectionImages = (1 ... 20).compactMap { UIImage(named: "pic\($0)") }
-        facade.addImagesWithTimer(time: 0.5, repeat: 20, userImages: collectionImages)
-    }
+        processor.processImagesOnThread(
+            sourceImages: sourceImages,
+            filter: .noir,
+            qos: .userInteractive) { [weak self] resultCGImages in
+                let endTime = CFAbsoluteTimeGetCurrent()
+                let duration = endTime - startTime
+                print("The process time took \(duration) seconds")
 
-    func removeSub() {
-        facade.removeSubscription(for: self)
+                let uiImages = resultCGImages.compactMap { CGImage -> UIImage? in
+                    guard let cgImage = CGImage else { return nil }
+                    return UIImage(cgImage: cgImage)
+                }
+
+                DispatchQueue.main.async {
+                    self?.processedImages = uiImages
+                    self?.photosCollectionView.reloadData()
+                }
+            }
     }
 
     func setupView() {
@@ -60,7 +71,6 @@ class PhotosViewController: UIViewController, ImageLibrarySubscriber {
 
     func setupCollectionView() {
         view.addSubview(photosCollectionView)
-
         photosCollectionView.delegate = self
         photosCollectionView.dataSource = self
     }
@@ -86,20 +96,24 @@ class PhotosViewController: UIViewController, ImageLibrarySubscriber {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         navigationController?.navigationBar.isHidden = true
-        removeSub()
     }
 }
 
 extension PhotosViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return images.count
+        return photos.count
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PhotosCollectionViewCell", for: indexPath) as? PhotosCollectionViewCell else {
             fatalError("could not dequeueReusableCell")
         }
-        cell.configure(image: images[indexPath.item])
+        if !processedImages.isEmpty && indexPath.item < processedImages.count {
+            cell.configure(image: processedImages[indexPath.item])
+        } else {
+            let image = UIImage(named: photos[indexPath.item]) ?? UIImage()
+            cell.configure(image: image)
+        }
         return cell
     }
 }
@@ -130,9 +144,13 @@ extension PhotosViewController: UICollectionViewDelegateFlowLayout {
     }
 }
 
-extension PhotosViewController {
-    func receive(images: [UIImage]) {
-        self.images = images
-        photosCollectionView.reloadData()
-    }
-}
+/*
+ Time results for the .noir filter and array of 20 pics:
+ 
+ QoS .userInteractive: ~0.40 sec (12 threads used)
+ QoS .userInitiated:   ~0.43 sec (11 threads used)
+ QoS .utility:         ~0.43 sec (13 threads used)
+ QoS .background:      ~1.29 sec (12 threads used)
+ 
+ Conclusion: The higher the priority (QoS), the faster the task is executed because the system allocates more CPU time to it, even if the number of threads remains the same (in my tests, it was around 11-13). For example, .userInteractive took 0.4 seconds, while .background took 1.29 seconds.
+ */

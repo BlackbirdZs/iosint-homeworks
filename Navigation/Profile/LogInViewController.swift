@@ -2,16 +2,15 @@
 import UIKit
 
 class LogInViewController: UIViewController {
-    
     weak var coordinator: LoginCoordinator?
-    
+
     private lazy var scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         scrollView.showsVerticalScrollIndicator = true
         scrollView.showsHorizontalScrollIndicator = false
         scrollView.backgroundColor = .white
-        
+
         return scrollView
     }()
 
@@ -27,7 +26,7 @@ class LogInViewController: UIViewController {
         let labelImageView = UIImageView()
         labelImageView.translatesAutoresizingMaskIntoConstraints = false
         labelImageView.image = UIImage(named: "VKLogo")
-        
+
         return labelImageView
     }()
 
@@ -41,7 +40,7 @@ class LogInViewController: UIViewController {
     lazy var loginButton: CustomButton = {
         let loginButton = CustomButton(title: "Log in", titleColor: .white)
         loginButton.layer.cornerRadius = 10
-        
+
         guard let bluePixel = UIImage(named: "bluePixel") else {
             return loginButton
         }
@@ -50,10 +49,26 @@ class LogInViewController: UIViewController {
         loginButton.setBackgroundImage(dimmedBluePixel, for: .highlighted)
         loginButton.setBackgroundImage(dimmedBluePixel, for: .selected)
         loginButton.setBackgroundImage(dimmedBluePixel, for: .disabled)
-    
+
         loginButton.tapOnButton = { [weak self] in self?.loginButtonPressed() }
-        
+
         return loginButton
+    }()
+
+    lazy var pickPasswordButton: CustomButton = {
+        let pickPasswordButton = CustomButton(title: "Generate random password", titleColor: .white)
+        pickPasswordButton.layer.cornerRadius = 10
+
+        guard let bluePixel = UIImage(named: "bluePixel") else {
+            return loginButton
+        }
+        let dimmedBluePixel = imageWithAlpha(bluePixel, alpha: 0.8)
+        pickPasswordButton.setBackgroundImage(bluePixel, for: .normal)
+        pickPasswordButton.setBackgroundImage(dimmedBluePixel, for: .highlighted)
+        pickPasswordButton.setBackgroundImage(dimmedBluePixel, for: .selected)
+        pickPasswordButton.setBackgroundImage(dimmedBluePixel, for: .disabled)
+
+        return pickPasswordButton
     }()
 
     lazy var fieldsContainerView: UIView = {
@@ -64,7 +79,7 @@ class LogInViewController: UIViewController {
         fieldsContainerView.layer.borderWidth = 0.5
         fieldsContainerView.layer.cornerRadius = 10
         fieldsContainerView.clipsToBounds = true
-        
+
         return fieldsContainerView
     }()
 
@@ -72,8 +87,20 @@ class LogInViewController: UIViewController {
         let containerViewLine = UIView()
         containerViewLine.translatesAutoresizingMaskIntoConstraints = false
         containerViewLine.backgroundColor = .systemGray4
-        
+
         return containerViewLine
+    }()
+
+    lazy var randomPassContainerView: UIView = {
+        let randomPassContainerView = UIView()
+        randomPassContainerView.translatesAutoresizingMaskIntoConstraints = false
+        randomPassContainerView.backgroundColor = .systemGray6
+        randomPassContainerView.layer.borderColor = UIColor.lightGray.cgColor
+        randomPassContainerView.layer.borderWidth = 0.5
+        randomPassContainerView.layer.cornerRadius = 10
+        randomPassContainerView.clipsToBounds = true
+
+        return randomPassContainerView
     }()
 
     lazy var loginTextField: UITextField = {
@@ -85,7 +112,7 @@ class LogInViewController: UIViewController {
         loginTextField.textColor = .black
         loginTextField.tintColor = UIColor(named: "VKColor")
         loginTextField.autocapitalizationType = .none
-        
+
         return loginTextField
     }()
 
@@ -98,8 +125,19 @@ class LogInViewController: UIViewController {
         passwordTextField.textColor = .black
         passwordTextField.tintColor = UIColor(named: "VKColor")
         passwordTextField.isSecureTextEntry = true
-        
+
         return passwordTextField
+    }()
+
+    lazy var randomPassTextField: UITextField = {
+        let randomPassTextField = UITextField()
+        randomPassTextField.translatesAutoresizingMaskIntoConstraints = false
+        randomPassTextField.placeholder = "Random password will be generated here"
+        randomPassTextField.font = .systemFont(ofSize: 16)
+        randomPassTextField.textColor = .black
+        randomPassTextField.tintColor = UIColor(named: "VKColor")
+
+        return randomPassTextField
     }()
 
     var loginDelegate: LoginViewControllerDelegate?
@@ -122,19 +160,29 @@ class LogInViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        setupView()
+        addSubviews()
+        setupConstraints()
+    }
+
+    func setupView() {
         view.backgroundColor = .white
+        navigationController?.navigationBar.isHidden = true
+    }
+
+    func addSubviews() {
         view.addSubview(scrollView)
         scrollView.addSubview(contentView)
         contentView.addSubview(labelImageView)
         contentView.addSubview(fieldsContainerView)
         contentView.addSubview(containerViewLine)
+        contentView.addSubview(randomPassContainerView)
         fieldsContainerView.addSubview(loginTextField)
         fieldsContainerView.addSubview(passwordTextField)
         contentView.addSubview(loginButton)
-
-        navigationController?.navigationBar.isHidden = true
-
-        setupConstraints()
+        contentView.addSubview(passwordTextField)
+        contentView.addSubview(pickPasswordButton)
+        contentView.addSubview(randomPassTextField)
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -183,6 +231,19 @@ class LogInViewController: UIViewController {
 
     private func setupConstraints() {
         NSLayoutConstraint.activate([
+            scrollView.topAnchor.constraint(equalTo: view.topAnchor),
+            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+
+            contentView.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor),
+            contentView.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor),
+            contentView.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor),
+            contentView.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor),
+            contentView.widthAnchor.constraint(equalTo: scrollView.frameLayoutGuide.widthAnchor),
+            contentView.heightAnchor.constraint(
+                greaterThanOrEqualTo: scrollView.frameLayoutGuide.heightAnchor),
+
             labelImageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 120),
             labelImageView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
             labelImageView.heightAnchor.constraint(equalToConstant: 100),
@@ -193,10 +254,20 @@ class LogInViewController: UIViewController {
             fieldsContainerView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             fieldsContainerView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
 
+            loginTextField.topAnchor.constraint(equalTo: fieldsContainerView.topAnchor, constant: 5),
+            loginTextField.bottomAnchor.constraint(equalTo: containerViewLine.topAnchor, constant: -5),
+            loginTextField.leadingAnchor.constraint(equalTo: fieldsContainerView.leadingAnchor, constant: 15),
+            loginTextField.trailingAnchor.constraint(equalTo: fieldsContainerView.trailingAnchor, constant: -15),
+
             containerViewLine.heightAnchor.constraint(equalToConstant: 1),
             containerViewLine.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             containerViewLine.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             containerViewLine.topAnchor.constraint(equalTo: fieldsContainerView.topAnchor, constant: 50),
+
+            passwordTextField.topAnchor.constraint(equalTo: containerViewLine.bottomAnchor, constant: 5),
+            passwordTextField.bottomAnchor.constraint(equalTo: fieldsContainerView.bottomAnchor, constant: -5),
+            passwordTextField.leadingAnchor.constraint(equalTo: fieldsContainerView.leadingAnchor, constant: 15),
+            passwordTextField.trailingAnchor.constraint(equalTo: fieldsContainerView.trailingAnchor, constant: -15),
 
             loginButton.topAnchor.constraint(equalTo: fieldsContainerView.bottomAnchor, constant: 16),
             loginButton.widthAnchor.constraint(equalTo: fieldsContainerView.widthAnchor),
@@ -207,29 +278,20 @@ class LogInViewController: UIViewController {
                 lessThanOrEqualTo: contentView.bottomAnchor,
                 constant: -20),
 
-            loginTextField.topAnchor.constraint(equalTo: fieldsContainerView.topAnchor, constant: 5),
-            loginTextField.bottomAnchor.constraint(equalTo: containerViewLine.topAnchor, constant: -5),
-            loginTextField.leadingAnchor.constraint(equalTo: fieldsContainerView.leadingAnchor, constant: 15),
-            loginTextField.trailingAnchor.constraint(equalTo: fieldsContainerView.trailingAnchor, constant: -15),
+            randomPassContainerView.heightAnchor.constraint(equalToConstant: 50),
+            randomPassContainerView.topAnchor.constraint(equalTo: loginButton.bottomAnchor, constant: 25),
+            randomPassContainerView.leadingAnchor.constraint(equalTo: fieldsContainerView.leadingAnchor),
+            randomPassContainerView.trailingAnchor.constraint(equalTo: fieldsContainerView.trailingAnchor),
 
-            passwordTextField.topAnchor.constraint(equalTo: containerViewLine.bottomAnchor, constant: 5),
-            passwordTextField.bottomAnchor.constraint(equalTo: fieldsContainerView.bottomAnchor, constant: -5),
-            passwordTextField.leadingAnchor.constraint(equalTo: fieldsContainerView.leadingAnchor, constant: 15),
-            passwordTextField.trailingAnchor.constraint(equalTo: fieldsContainerView.trailingAnchor, constant: -15),
+            randomPassTextField.topAnchor.constraint(equalTo: randomPassContainerView.topAnchor, constant: 15),
+            randomPassTextField.leadingAnchor.constraint(equalTo: randomPassContainerView.leadingAnchor, constant: 15),
+            randomPassTextField.trailingAnchor.constraint(equalTo: randomPassContainerView.trailingAnchor, constant: -15),
 
-            scrollView.topAnchor.constraint(equalTo: view.topAnchor),
-            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-
-            contentView.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor),
-            contentView.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor),
-            contentView.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor),
-            contentView.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor),
-
-            contentView.widthAnchor.constraint(equalTo: scrollView.frameLayoutGuide.widthAnchor),
-            contentView.heightAnchor.constraint(
-                greaterThanOrEqualTo: scrollView.frameLayoutGuide.heightAnchor),
+            pickPasswordButton.topAnchor.constraint(equalTo: loginButton.bottomAnchor, constant: 90),
+            pickPasswordButton.widthAnchor.constraint(equalTo: fieldsContainerView.widthAnchor),
+            pickPasswordButton.heightAnchor.constraint(equalToConstant: 50),
+            pickPasswordButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            pickPasswordButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
         ])
     }
 

@@ -55,7 +55,7 @@ class LogInViewController: UIViewController {
         return loginButton
     }()
 
-    lazy var pickPasswordButton: CustomButton = {
+    lazy var generatePasswordButton: CustomButton = {
         let pickPasswordButton = CustomButton(title: "Generate random password", titleColor: .white)
         pickPasswordButton.layer.cornerRadius = 10
 
@@ -67,6 +67,7 @@ class LogInViewController: UIViewController {
         pickPasswordButton.setBackgroundImage(dimmedBluePixel, for: .highlighted)
         pickPasswordButton.setBackgroundImage(dimmedBluePixel, for: .selected)
         pickPasswordButton.setBackgroundImage(dimmedBluePixel, for: .disabled)
+        pickPasswordButton.tapOnButton = { [weak self] in self?.randomPassButtonPressed() }
 
         return pickPasswordButton
     }()
@@ -89,18 +90,6 @@ class LogInViewController: UIViewController {
         containerViewLine.backgroundColor = .systemGray4
 
         return containerViewLine
-    }()
-
-    lazy var randomPassContainerView: UIView = {
-        let randomPassContainerView = UIView()
-        randomPassContainerView.translatesAutoresizingMaskIntoConstraints = false
-        randomPassContainerView.backgroundColor = .systemGray6
-        randomPassContainerView.layer.borderColor = UIColor.lightGray.cgColor
-        randomPassContainerView.layer.borderWidth = 0.5
-        randomPassContainerView.layer.cornerRadius = 10
-        randomPassContainerView.clipsToBounds = true
-
-        return randomPassContainerView
     }()
 
     lazy var loginTextField: UITextField = {
@@ -127,17 +116,6 @@ class LogInViewController: UIViewController {
         passwordTextField.isSecureTextEntry = true
 
         return passwordTextField
-    }()
-
-    lazy var randomPassTextField: UITextField = {
-        let randomPassTextField = UITextField()
-        randomPassTextField.translatesAutoresizingMaskIntoConstraints = false
-        randomPassTextField.placeholder = "Random password will be generated here"
-        randomPassTextField.font = .systemFont(ofSize: 16)
-        randomPassTextField.textColor = .black
-        randomPassTextField.tintColor = UIColor(named: "VKColor")
-
-        return randomPassTextField
     }()
 
     var loginDelegate: LoginViewControllerDelegate?
@@ -176,13 +154,11 @@ class LogInViewController: UIViewController {
         contentView.addSubview(labelImageView)
         contentView.addSubview(fieldsContainerView)
         contentView.addSubview(containerViewLine)
-        contentView.addSubview(randomPassContainerView)
         fieldsContainerView.addSubview(loginTextField)
         fieldsContainerView.addSubview(passwordTextField)
         contentView.addSubview(loginButton)
         contentView.addSubview(passwordTextField)
-        contentView.addSubview(pickPasswordButton)
-        contentView.addSubview(randomPassTextField)
+        contentView.addSubview(generatePasswordButton)
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -278,20 +254,11 @@ class LogInViewController: UIViewController {
                 lessThanOrEqualTo: contentView.bottomAnchor,
                 constant: -20),
 
-            randomPassContainerView.heightAnchor.constraint(equalToConstant: 50),
-            randomPassContainerView.topAnchor.constraint(equalTo: loginButton.bottomAnchor, constant: 25),
-            randomPassContainerView.leadingAnchor.constraint(equalTo: fieldsContainerView.leadingAnchor),
-            randomPassContainerView.trailingAnchor.constraint(equalTo: fieldsContainerView.trailingAnchor),
-
-            randomPassTextField.topAnchor.constraint(equalTo: randomPassContainerView.topAnchor, constant: 15),
-            randomPassTextField.leadingAnchor.constraint(equalTo: randomPassContainerView.leadingAnchor, constant: 15),
-            randomPassTextField.trailingAnchor.constraint(equalTo: randomPassContainerView.trailingAnchor, constant: -15),
-
-            pickPasswordButton.topAnchor.constraint(equalTo: loginButton.bottomAnchor, constant: 90),
-            pickPasswordButton.widthAnchor.constraint(equalTo: fieldsContainerView.widthAnchor),
-            pickPasswordButton.heightAnchor.constraint(equalToConstant: 50),
-            pickPasswordButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-            pickPasswordButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+            generatePasswordButton.topAnchor.constraint(equalTo: loginButton.bottomAnchor, constant: 90),
+            generatePasswordButton.widthAnchor.constraint(equalTo: fieldsContainerView.widthAnchor),
+            generatePasswordButton.heightAnchor.constraint(equalToConstant: 50),
+            generatePasswordButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            generatePasswordButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
         ])
     }
 
@@ -331,4 +298,6 @@ class LogInViewController: UIViewController {
             }
         }
     }
+
+    @objc func randomPassButtonPressed() {}
 }

@@ -117,6 +117,15 @@ class LogInViewController: UIViewController {
 
         return passwordTextField
     }()
+    
+    private let activityIndicator: UIActivityIndicatorView = {
+        let indicator = UIActivityIndicatorView(style: .large)
+        indicator.translatesAutoresizingMaskIntoConstraints = false
+        indicator.hidesWhenStopped = true
+        indicator.color = .systemGray
+        
+        return indicator
+    }()
 
     var loginDelegate: LoginViewControllerDelegate?
 
@@ -150,6 +159,7 @@ class LogInViewController: UIViewController {
 
     func addSubviews() {
         view.addSubview(scrollView)
+        view.addSubview(activityIndicator)
         scrollView.addSubview(contentView)
         contentView.addSubview(labelImageView)
         contentView.addSubview(fieldsContainerView)
@@ -207,6 +217,12 @@ class LogInViewController: UIViewController {
 
     private func setupConstraints() {
         NSLayoutConstraint.activate([
+            
+            activityIndicator.widthAnchor.constraint(equalToConstant: 100),
+            activityIndicator.heightAnchor.constraint(equalToConstant: 100),
+            activityIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            
             scrollView.topAnchor.constraint(equalTo: view.topAnchor),
             scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
@@ -299,5 +315,6 @@ class LogInViewController: UIViewController {
         }
     }
 
-    @objc func randomPassButtonPressed() {}
+    @objc func randomPassButtonPressed() {
+        let bruteForce = BruteForce() }
 }

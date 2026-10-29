@@ -52,7 +52,7 @@
 		B2D05858301CBB660066DDBE /* Exceptions for "Navigation" folder in "Navigation" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				App/Info.plist,
+				Info.plist,
 				"Modules (screens)/Feed/Post.swift",
 			);
 			target = B2D05845301CBB650066DDBE /* Navigation */;

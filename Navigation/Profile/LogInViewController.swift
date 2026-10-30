@@ -56,20 +56,20 @@ class LogInViewController: UIViewController {
     }()
 
     lazy var generatePasswordButton: CustomButton = {
-        let pickPasswordButton = CustomButton(title: "Generate random password", titleColor: .white)
-        pickPasswordButton.layer.cornerRadius = 10
+        let generatePasswordButton = CustomButton(title: "Generate random password", titleColor: .white)
+        generatePasswordButton.layer.cornerRadius = 10
 
         guard let bluePixel = UIImage(named: "bluePixel") else {
             return loginButton
         }
         let dimmedBluePixel = imageWithAlpha(bluePixel, alpha: 0.8)
-        pickPasswordButton.setBackgroundImage(bluePixel, for: .normal)
-        pickPasswordButton.setBackgroundImage(dimmedBluePixel, for: .highlighted)
-        pickPasswordButton.setBackgroundImage(dimmedBluePixel, for: .selected)
-        pickPasswordButton.setBackgroundImage(dimmedBluePixel, for: .disabled)
-        pickPasswordButton.tapOnButton = { [weak self] in self?.randomPassButtonPressed() }
+        generatePasswordButton.setBackgroundImage(bluePixel, for: .normal)
+        generatePasswordButton.setBackgroundImage(dimmedBluePixel, for: .highlighted)
+        generatePasswordButton.setBackgroundImage(dimmedBluePixel, for: .selected)
+        generatePasswordButton.setBackgroundImage(dimmedBluePixel, for: .disabled)
+        generatePasswordButton.tapOnButton = { [weak self] in self?.randomPassButtonPressed() }
 
-        return pickPasswordButton
+        return generatePasswordButton
     }()
 
     lazy var fieldsContainerView: UIView = {
@@ -107,6 +107,9 @@ class LogInViewController: UIViewController {
 
     lazy var passwordTextField: UITextField = {
         let passwordTextField = UITextField()
+        let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: 40, height: 40))
+        passwordTextField.rightView = paddingView
+        passwordTextField.rightViewMode = .always
         passwordTextField.translatesAutoresizingMaskIntoConstraints = false
         passwordTextField.placeholder = "Password"
         passwordTextField.text = "admin"
@@ -119,11 +122,11 @@ class LogInViewController: UIViewController {
     }()
 
     private let activityIndicator: UIActivityIndicatorView = {
-        let indicator = UIActivityIndicatorView(style: .large)
+        let indicator = UIActivityIndicatorView(style: .medium)
         indicator.translatesAutoresizingMaskIntoConstraints = false
         indicator.hidesWhenStopped = true
-        indicator.color = .systemGray
-        
+        indicator.color = .black
+
         return indicator
     }()
 
@@ -159,16 +162,15 @@ class LogInViewController: UIViewController {
 
     func addSubviews() {
         view.addSubview(scrollView)
-        view.addSubview(activityIndicator)
         scrollView.addSubview(contentView)
         contentView.addSubview(labelImageView)
         contentView.addSubview(fieldsContainerView)
-        contentView.addSubview(containerViewLine)
-        fieldsContainerView.addSubview(loginTextField)
-        fieldsContainerView.addSubview(passwordTextField)
         contentView.addSubview(loginButton)
-        contentView.addSubview(passwordTextField)
         contentView.addSubview(generatePasswordButton)
+        fieldsContainerView.addSubview(loginTextField)
+        fieldsContainerView.addSubview(containerViewLine)
+        fieldsContainerView.addSubview(passwordTextField)
+        fieldsContainerView.addSubview(activityIndicator)
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -217,12 +219,11 @@ class LogInViewController: UIViewController {
 
     private func setupConstraints() {
         NSLayoutConstraint.activate([
+            activityIndicator.widthAnchor.constraint(equalToConstant: 10),
+            activityIndicator.heightAnchor.constraint(equalToConstant: 10),
+            activityIndicator.centerYAnchor.constraint(equalTo: passwordTextField.centerYAnchor),
+            activityIndicator.trailingAnchor.constraint(equalTo: fieldsContainerView.trailingAnchor, constant: -15),
 
-            activityIndicator.widthAnchor.constraint(equalToConstant: 100),
-            activityIndicator.heightAnchor.constraint(equalToConstant: 100),
-            activityIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-            
             scrollView.topAnchor.constraint(equalTo: view.topAnchor),
             scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
@@ -270,7 +271,7 @@ class LogInViewController: UIViewController {
                 lessThanOrEqualTo: contentView.bottomAnchor,
                 constant: -20),
 
-            generatePasswordButton.topAnchor.constraint(equalTo: loginButton.bottomAnchor, constant: 90),
+            generatePasswordButton.topAnchor.constraint(equalTo: loginButton.bottomAnchor, constant: 40),
             generatePasswordButton.widthAnchor.constraint(equalTo: fieldsContainerView.widthAnchor),
             generatePasswordButton.heightAnchor.constraint(equalToConstant: 50),
             generatePasswordButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
@@ -321,10 +322,10 @@ class LogInViewController: UIViewController {
         generatePasswordButton.isEnabled = false
         loginButton.isEnabled = false
         let charachters = Array(String().printable)
-        let randomPassword = String((0..<2).map { _ in charachters.randomElement()! })
+        let randomPassword = String((0 ..< 2).map { _ in charachters.randomElement()! })
         let queue = OperationQueue()
         queue.addOperation {
-            [ weak self ] in
+            [weak self] in
             let bruteForce = BruteForce()
             bruteForce.bruteForce(passwordToUnlock: randomPassword) { foundPassword in
                 DispatchQueue.main.async {

@@ -271,7 +271,7 @@ class LogInViewController: UIViewController {
                 lessThanOrEqualTo: contentView.bottomAnchor,
                 constant: -20),
 
-            generatePasswordButton.topAnchor.constraint(equalTo: loginButton.bottomAnchor, constant: 40),
+            generatePasswordButton.topAnchor.constraint(equalTo: loginButton.bottomAnchor, constant: 10),
             generatePasswordButton.widthAnchor.constraint(equalTo: fieldsContainerView.widthAnchor),
             generatePasswordButton.heightAnchor.constraint(equalToConstant: 50),
             generatePasswordButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),

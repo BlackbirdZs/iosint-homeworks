@@ -117,7 +117,7 @@ class LogInViewController: UIViewController {
 
         return passwordTextField
     }()
-    
+
     private let activityIndicator: UIActivityIndicatorView = {
         let indicator = UIActivityIndicatorView(style: .large)
         indicator.translatesAutoresizingMaskIntoConstraints = false
@@ -217,7 +217,7 @@ class LogInViewController: UIViewController {
 
     private func setupConstraints() {
         NSLayoutConstraint.activate([
-            
+
             activityIndicator.widthAnchor.constraint(equalToConstant: 100),
             activityIndicator.heightAnchor.constraint(equalToConstant: 100),
             activityIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
@@ -316,5 +316,25 @@ class LogInViewController: UIViewController {
     }
 
     @objc func randomPassButtonPressed() {
-        let bruteForce = BruteForce() }
+        passwordTextField.text = ""
+        activityIndicator.startAnimating()
+        generatePasswordButton.isEnabled = false
+        loginButton.isEnabled = false
+        let charachters = Array(String().printable)
+        let randomPassword = String((0..<2).map { _ in charachters.randomElement()! })
+        let queue = OperationQueue()
+        queue.addOperation {
+            [ weak self ] in
+            let bruteForce = BruteForce()
+            bruteForce.bruteForce(passwordToUnlock: randomPassword) { foundPassword in
+                DispatchQueue.main.async {
+                    self?.activityIndicator.stopAnimating()
+                    self?.passwordTextField.text = foundPassword
+                    self?.passwordTextField.isSecureTextEntry = false
+                    self?.generatePasswordButton.isEnabled = true
+                    self?.loginButton.isEnabled = true
+                }
+            }
+        }
+    }
 }

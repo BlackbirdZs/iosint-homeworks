@@ -125,7 +125,7 @@ class LogInViewController: UIViewController {
         let indicator = UIActivityIndicatorView(style: .medium)
         indicator.translatesAutoresizingMaskIntoConstraints = false
         indicator.hidesWhenStopped = true
-        indicator.color = .black
+        indicator.color = .vk
 
         return indicator
     }()
@@ -322,7 +322,7 @@ class LogInViewController: UIViewController {
         generatePasswordButton.isEnabled = false
         loginButton.isEnabled = false
         let charachters = Array(String().printable)
-        let randomPassword = String((0 ..< 2).map { _ in charachters.randomElement()! })
+        let randomPassword = String((0 ..< 4).map { _ in charachters.randomElement()! })
         let queue = OperationQueue()
         queue.addOperation {
             [weak self] in

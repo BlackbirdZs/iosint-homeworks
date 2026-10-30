@@ -14,7 +14,6 @@ class BruteForce {
 
         while password != passwordToUnlock {
             password = generateBruteForce(password, fromArray: ALLOWED_CHARACTERS)
-            usleep(500)
         }
         completion(password)
     }

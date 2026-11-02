@@ -49,7 +49,7 @@ class ProfileHeaderView: UIView {
         setStatusButton.layer.shadowOffset = .init(width: 4, height: 4)
         setStatusButton.layer.shadowOpacity = 0.7
 
-        setStatusButton.tapOnButton = { [ weak self ] in self?.buttonPressed() }
+        setStatusButton.tapOnButton = { [weak self] in self?.buttonPressed() }
 
         return setStatusButton
     }()
@@ -76,14 +76,21 @@ class ProfileHeaderView: UIView {
 
     override init(frame: CGRect) {
         super.init(frame: frame)
+        setupView()
+        addSubviews()
+        setupConstraints()
+    }
+
+    func setupView() {
         backgroundColor = .white
+    }
+
+    func addSubviews() {
         addSubview(avatarImageView)
         addSubview(fullNameLabel)
         addSubview(statusLabel)
         addSubview(setStatusButton)
         addSubview(statusTextField)
-
-        setupConstraints()
     }
 
     required init?(coder: NSCoder) {
@@ -125,7 +132,7 @@ class ProfileHeaderView: UIView {
     @objc func statusTextChanged(_ textField: UITextField) {
         statusText = textField.text ?? ""
     }
-    
+
     func configure(with user: User) {
         avatarImageView.image = user.avatar
         fullNameLabel.text = user.fullName

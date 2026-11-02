@@ -12,6 +12,9 @@ class ProfileViewController: UIViewController {
     fileprivate let posts = FeedPost.make()
     private var avatarPreviousFrame: CGRect = .zero
     weak var coordinator: ProfileCoordinator?
+    private var timer: Timer?
+    private var counter = 59
+    
 
     var user: User? {
         didSet {
@@ -20,6 +23,20 @@ class ProfileViewController: UIViewController {
             }
         }
     }
+    
+    private lazy var timerLabel: UILabel = {
+        let timerLabel = UILabel()
+        timerLabel.translatesAutoresizingMaskIntoConstraints = false
+        timerLabel.backgroundColor = .clear
+        timerLabel.layer.borderWidth = 1
+        timerLabel.layer.borderColor = UIColor.systemBlue.cgColor
+        timerLabel.textColor = .systemBlue
+        timerLabel.text = "10"
+        timerLabel.textAlignment = .center
+        timerLabel.layer.cornerRadius = 20
+        
+        return timerLabel
+    }()
 
     private lazy var avatarBackgroundView: UIView = {
         let avatarBackgroundView = UIView()
@@ -156,6 +173,7 @@ class ProfileViewController: UIViewController {
         view.addSubview(avatarBackgroundView)
         view.addSubview(avatarImageView)
         view.addSubview(closeButton)
+        view.addSubview(timerLabel)
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -172,6 +190,12 @@ class ProfileViewController: UIViewController {
         let safeAreaGuide = view.safeAreaLayoutGuide
 
         NSLayoutConstraint.activate([
+    
+            timerLabel.topAnchor.constraint(equalTo: safeAreaGuide.topAnchor, constant: 30),
+            timerLabel.trailingAnchor.constraint(equalTo: safeAreaGuide.trailingAnchor, constant: -16),
+            timerLabel.widthAnchor.constraint(equalToConstant: 40),
+            timerLabel.heightAnchor.constraint(equalTo: timerLabel.widthAnchor),
+            
             tableView.topAnchor.constraint(equalTo: view.topAnchor),
             tableView.bottomAnchor.constraint(equalTo: safeAreaGuide.bottomAnchor),
             tableView.leadingAnchor.constraint(equalTo: safeAreaGuide.leadingAnchor),

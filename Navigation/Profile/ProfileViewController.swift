@@ -30,7 +30,7 @@ class ProfileViewController: UIViewController {
         timerLabel.layer.borderWidth = 1
         timerLabel.layer.borderColor = UIColor.systemBlue.cgColor
         timerLabel.textColor = .systemBlue
-        timerLabel.text = "10"
+        timerLabel.text = "59"
         timerLabel.textAlignment = .center
         timerLabel.layer.cornerRadius = 20
 
@@ -177,11 +177,14 @@ class ProfileViewController: UIViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        makeTimer()
         navigationController?.setNavigationBarHidden(true, animated: animated)
     }
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+        timer?.invalidate()
+        timer = nil
         navigationController?.setNavigationBarHidden(false, animated: animated)
     }
 
@@ -189,7 +192,7 @@ class ProfileViewController: UIViewController {
         let safeAreaGuide = view.safeAreaLayoutGuide
 
         NSLayoutConstraint.activate([
-            timerLabel.topAnchor.constraint(equalTo: safeAreaGuide.topAnchor, constant: 30),
+            timerLabel.topAnchor.constraint(equalTo: safeAreaGuide.topAnchor, constant: 50),
             timerLabel.trailingAnchor.constraint(equalTo: safeAreaGuide.trailingAnchor, constant: -16),
             timerLabel.widthAnchor.constraint(equalToConstant: 40),
             timerLabel.heightAnchor.constraint(equalTo: timerLabel.widthAnchor),
@@ -219,23 +222,41 @@ class ProfileViewController: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
     }
+    
+    private func showAlert(message: String) {
+        let alert = UIAlertController(
+            title: "Attention",
+            message: message,
+            preferredStyle: .alert
+        )
+        let doneAction = UIAlertAction(
+            title: "Done",
+            style: .default,
+            handler: { _ in self.makeTimer() }
+        )
+        alert.addAction(doneAction)
+        present(alert, animated: true)
+    }
 
     func makeTimer() {
-        timer = Timer.scheduledTimer(
-            withTimeInterval: 1.0,
-            repeats: true) { [weak self] timer in
+        timer?.invalidate()
+        counter = 59
+        timer = Timer(
+            timeInterval: 1.0,
+            repeats: true,
+            block: { [weak self] _ in
                 guard let self else { return }
                 counter -= 1
-                timerLabel.text = counter <= 0 ? "xx" : "\(counter)"
-                timer.tolerance = 1
+                timerLabel.text = counter <= 0 ? "0" : "\(counter)"
                 if counter <= 0 {
                     self.timer?.invalidate()
-                    self.timer? = nil
+                    self.timer = nil
+                    showAlert(message: "You spent whole one minute! Take care of your eyes!")
                 }
             }
+        )
         guard let timer else { return }
-        Runloop.current.add(timer, forMode: .common)
-        Runloop.current.run()
+        RunLoop.main.add(timer, forMode: .common)
     }
 }
 

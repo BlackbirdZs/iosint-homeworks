@@ -14,7 +14,6 @@ class ProfileViewController: UIViewController {
     weak var coordinator: ProfileCoordinator?
     private var timer: Timer?
     private var counter = 59
-    
 
     var user: User? {
         didSet {
@@ -23,7 +22,7 @@ class ProfileViewController: UIViewController {
             }
         }
     }
-    
+
     private lazy var timerLabel: UILabel = {
         let timerLabel = UILabel()
         timerLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -34,7 +33,7 @@ class ProfileViewController: UIViewController {
         timerLabel.text = "10"
         timerLabel.textAlignment = .center
         timerLabel.layer.cornerRadius = 20
-        
+
         return timerLabel
     }()
 
@@ -190,12 +189,11 @@ class ProfileViewController: UIViewController {
         let safeAreaGuide = view.safeAreaLayoutGuide
 
         NSLayoutConstraint.activate([
-    
             timerLabel.topAnchor.constraint(equalTo: safeAreaGuide.topAnchor, constant: 30),
             timerLabel.trailingAnchor.constraint(equalTo: safeAreaGuide.trailingAnchor, constant: -16),
             timerLabel.widthAnchor.constraint(equalToConstant: 40),
             timerLabel.heightAnchor.constraint(equalTo: timerLabel.widthAnchor),
-            
+
             tableView.topAnchor.constraint(equalTo: view.topAnchor),
             tableView.bottomAnchor.constraint(equalTo: safeAreaGuide.bottomAnchor),
             tableView.leadingAnchor.constraint(equalTo: safeAreaGuide.leadingAnchor),
@@ -220,6 +218,24 @@ class ProfileViewController: UIViewController {
         tableView.register(PhotosTableViewCell.self, forCellReuseIdentifier: "Photos cell")
         tableView.delegate = self
         tableView.dataSource = self
+    }
+
+    func makeTimer() {
+        timer = Timer.scheduledTimer(
+            withTimeInterval: 1.0,
+            repeats: true) { [weak self] timer in
+                guard let self else { return }
+                counter -= 1
+                timerLabel.text = counter <= 0 ? "xx" : "\(counter)"
+                timer.tolerance = 1
+                if counter <= 0 {
+                    self.timer?.invalidate()
+                    self.timer? = nil
+                }
+            }
+        guard let timer else { return }
+        Runloop.current.add(timer, forMode: .common)
+        Runloop.current.run()
     }
 }
 

@@ -107,6 +107,7 @@ class LogInViewController: UIViewController {
 
     lazy var passwordTextField: UITextField = {
         let passwordTextField = UITextField()
+
         passwordTextField.translatesAutoresizingMaskIntoConstraints = false
         passwordTextField.placeholder = "Password"
         passwordTextField.text = "admin"

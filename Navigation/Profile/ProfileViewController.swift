@@ -317,3 +317,16 @@ extension ProfileViewController: UITableViewDelegate {
         }
     }
 }
+
+//Objective 1:
+
+/*
+ Tasks that can be performed after delay:
+ 
+ 1. Auto data refresh from server (every 30 seconds or more) - for example: weather refresh, new stock data or user posts
+ 
+ 2. Auto logout: after 5 minutes of inactivity the system will log out the user from the profile
+ 
+ 3. Content rotation - new ad banner each 10 seconds (timer)
+ 
+ */

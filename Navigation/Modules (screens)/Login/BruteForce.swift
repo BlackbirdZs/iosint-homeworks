@@ -8,14 +8,17 @@
 import Foundation
 
 class BruteForce {
-    func bruteForce(passwordToUnlock: String, completion: @escaping (String) -> Void) {
+    func bruteForce(passwordToUnlock: String, completion: @escaping (Result <String, AuthError>) -> Void) {
         let ALLOWED_CHARACTERS: [String] = String().printable.map { String($0) }
+        guard !ALLOWED_CHARACTERS.isEmpty else {
+            preconditionFailure("Error, symbol array is empty, cannot generate password")
+        }
         var password: String = ""
 
         while password != passwordToUnlock {
             password = generateBruteForce(password, fromArray: ALLOWED_CHARACTERS)
         }
-        completion(password)
+        completion(.success(password))
     }
 }
 

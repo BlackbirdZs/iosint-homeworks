@@ -342,12 +342,17 @@ class LogInViewController: UIViewController {
         queue.addOperation {
             [weak self] in
             let bruteForce = BruteForce()
-            bruteForce.bruteForce(passwordToUnlock: randomPassword) { foundPassword in
+            bruteForce.bruteForce(passwordToUnlock: randomPassword) { result in
                 DispatchQueue.main.async {
                     self?.activityIndicator.stopAnimating()
-                    self?.passwordTextField.text = foundPassword
-                    self?.passwordTextField.isSecureTextEntry = false
                     self?.generatePasswordButton.isEnabled = true
+                    switch result {
+                    case .success(let foundPassword):
+                        self?.passwordTextField.text = foundPassword
+                        self?.passwordTextField.isSecureTextEntry = false
+                    case .failure(let error):
+                        self?.showAlert(message: "Password generation error: \(error)")
+                    }
                     self?.loginButton.isEnabled = true
                 }
             }

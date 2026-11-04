@@ -291,26 +291,43 @@ class LogInViewController: UIViewController {
         present(alert, animated: true)
     }
 
+    func validateUser(login: String, password: String) throws -> User {
+        let cleanedLogin = login.trimmingCharacters(in: .whitespaces)
+        let cleanedPassword = password.trimmingCharacters(in: .whitespaces)
+
+        guard !cleanedLogin.isEmpty, !cleanedPassword.isEmpty else {
+            throw AuthError.emptyFields
+        }
+
+        let isCredentialsValid = Checker.shared.check(login: cleanedLogin, password: cleanedPassword)
+        guard isCredentialsValid else {
+            throw AuthError.invalidLoginOrPassword
+        }
+
+        guard let user = userService.checkLogin(login: cleanedLogin) else {
+            throw AuthError.noUser
+        }
+        return user
+    }
+
     @objc func loginButtonPressed() {
         guard let loginText = loginTextField.text else { return }
         guard let passwordText = passwordTextField.text else { return }
-        let cleanedLogin = loginText.trimmingCharacters(in: .whitespaces)
-        let cleanedPassword = passwordText.trimmingCharacters(in: .whitespaces)
 
-        if cleanedLogin.isEmpty || cleanedPassword.isEmpty {
-            showAlert(message: "Login or password field is empty")
-        } else {
-            let isValid = loginDelegate?.check(login: cleanedLogin, password: cleanedPassword)
-            if isValid != true {
+        do {
+            let user = try validateUser(login: loginText, password: passwordText)
+            coordinator?.openProfile(user)
+        } catch let error as AuthError {
+            switch error {
+            case .emptyFields:
+                showAlert(message: "Please, fill all the fields")
+            case .invalidLoginOrPassword:
                 showAlert(message: "Invalid login or password")
-            } else {
-                let user = userService.checkLogin(login: cleanedLogin)
-                if let user = user {
-                    coordinator?.openProfile(user)
-                } else {
-                    showAlert(message: "User not found")
-                }
+            case .noUser:
+                showAlert(message: "No user found")
             }
+        } catch {
+            showAlert(message: "Unknown error occured")
         }
     }
 

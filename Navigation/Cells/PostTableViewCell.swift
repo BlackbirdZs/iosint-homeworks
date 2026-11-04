@@ -18,7 +18,7 @@ class PostTableViewCell: UITableViewCell {
             reuseIdentifier: reuseIdentifier
         )
         tuneView()
-        addSubviewsPost()
+        addSubviews()
         setupConstraints()
     }
 
@@ -123,7 +123,7 @@ class PostTableViewCell: UITableViewCell {
         viewsLabel.text = "Views \(post.views)"
     }
 
-    private func addSubviewsPost() {
+    private func addSubviews() {
         contentView.addSubview(aboveLabel)
         contentView.addSubview(imageField)
         contentView.addSubview(descriptionField)

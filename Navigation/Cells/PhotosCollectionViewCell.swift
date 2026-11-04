@@ -27,7 +27,7 @@ class PhotosCollectionViewCell: UICollectionViewCell {
         super.init(frame: .zero)
 
         setupView()
-        addSubview()
+        addSubviews()
         setupLayouts()
     }
 
@@ -36,7 +36,7 @@ class PhotosCollectionViewCell: UICollectionViewCell {
         contentView.backgroundColor = .white
     }
 
-    private func addSubview() {
+    private func addSubviews() {
         contentView.addSubview(collectionImageView)
     }
 
@@ -48,6 +48,7 @@ class PhotosCollectionViewCell: UICollectionViewCell {
             collectionImageView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
         ])
     }
+
     func configure(image: UIImage) {
         collectionImageView.image = image
     }

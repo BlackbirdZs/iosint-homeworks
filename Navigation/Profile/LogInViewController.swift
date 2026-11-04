@@ -107,9 +107,7 @@ class LogInViewController: UIViewController {
 
     lazy var passwordTextField: UITextField = {
         let passwordTextField = UITextField()
-        let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: 40, height: 40))
-        passwordTextField.rightView = paddingView
-        passwordTextField.rightViewMode = .always
+
         passwordTextField.translatesAutoresizingMaskIntoConstraints = false
         passwordTextField.placeholder = "Password"
         passwordTextField.text = "admin"
@@ -125,7 +123,7 @@ class LogInViewController: UIViewController {
         let indicator = UIActivityIndicatorView(style: .medium)
         indicator.translatesAutoresizingMaskIntoConstraints = false
         indicator.hidesWhenStopped = true
-        indicator.color = .vk
+        indicator.color = .white
 
         return indicator
     }()
@@ -167,10 +165,10 @@ class LogInViewController: UIViewController {
         contentView.addSubview(fieldsContainerView)
         contentView.addSubview(loginButton)
         contentView.addSubview(generatePasswordButton)
+        contentView.addSubview(activityIndicator)
         fieldsContainerView.addSubview(loginTextField)
         fieldsContainerView.addSubview(containerViewLine)
         fieldsContainerView.addSubview(passwordTextField)
-        fieldsContainerView.addSubview(activityIndicator)
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -221,8 +219,8 @@ class LogInViewController: UIViewController {
         NSLayoutConstraint.activate([
             activityIndicator.widthAnchor.constraint(equalToConstant: 10),
             activityIndicator.heightAnchor.constraint(equalToConstant: 10),
-            activityIndicator.centerYAnchor.constraint(equalTo: passwordTextField.centerYAnchor),
-            activityIndicator.trailingAnchor.constraint(equalTo: fieldsContainerView.trailingAnchor, constant: -15),
+            activityIndicator.centerYAnchor.constraint(equalTo: generatePasswordButton.centerYAnchor),
+            activityIndicator.trailingAnchor.constraint(equalTo: generatePasswordButton.trailingAnchor, constant: -20),
 
             scrollView.topAnchor.constraint(equalTo: view.topAnchor),
             scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),

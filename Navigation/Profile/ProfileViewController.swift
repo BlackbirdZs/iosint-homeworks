@@ -12,6 +12,8 @@ class ProfileViewController: UIViewController {
     fileprivate let posts = FeedPost.make()
     private var avatarPreviousFrame: CGRect = .zero
     weak var coordinator: ProfileCoordinator?
+    private var timer: Timer?
+    private var counter = 59
 
     var user: User? {
         didSet {
@@ -20,6 +22,20 @@ class ProfileViewController: UIViewController {
             }
         }
     }
+
+    private lazy var timerLabel: UILabel = {
+        let timerLabel = UILabel()
+        timerLabel.translatesAutoresizingMaskIntoConstraints = false
+        timerLabel.backgroundColor = .clear
+        timerLabel.layer.borderWidth = 1
+        timerLabel.layer.borderColor = UIColor.systemBlue.cgColor
+        timerLabel.textColor = .systemBlue
+        timerLabel.text = "59"
+        timerLabel.textAlignment = .center
+        timerLabel.layer.cornerRadius = 20
+
+        return timerLabel
+    }()
 
     private lazy var avatarBackgroundView: UIView = {
         let avatarBackgroundView = UIView()
@@ -156,15 +172,19 @@ class ProfileViewController: UIViewController {
         view.addSubview(avatarBackgroundView)
         view.addSubview(avatarImageView)
         view.addSubview(closeButton)
+        view.addSubview(timerLabel)
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        makeTimer()
         navigationController?.setNavigationBarHidden(true, animated: animated)
     }
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+        timer?.invalidate()
+        timer = nil
         navigationController?.setNavigationBarHidden(false, animated: animated)
     }
 
@@ -172,6 +192,11 @@ class ProfileViewController: UIViewController {
         let safeAreaGuide = view.safeAreaLayoutGuide
 
         NSLayoutConstraint.activate([
+            timerLabel.topAnchor.constraint(equalTo: safeAreaGuide.topAnchor, constant: 50),
+            timerLabel.trailingAnchor.constraint(equalTo: safeAreaGuide.trailingAnchor, constant: -16),
+            timerLabel.widthAnchor.constraint(equalToConstant: 40),
+            timerLabel.heightAnchor.constraint(equalTo: timerLabel.widthAnchor),
+
             tableView.topAnchor.constraint(equalTo: view.topAnchor),
             tableView.bottomAnchor.constraint(equalTo: safeAreaGuide.bottomAnchor),
             tableView.leadingAnchor.constraint(equalTo: safeAreaGuide.leadingAnchor),
@@ -196,6 +221,42 @@ class ProfileViewController: UIViewController {
         tableView.register(PhotosTableViewCell.self, forCellReuseIdentifier: "Photos cell")
         tableView.delegate = self
         tableView.dataSource = self
+    }
+    
+    private func showAlert(message: String) {
+        let alert = UIAlertController(
+            title: "Attention",
+            message: message,
+            preferredStyle: .alert
+        )
+        let doneAction = UIAlertAction(
+            title: "Done",
+            style: .default,
+            handler: { _ in self.makeTimer() }
+        )
+        alert.addAction(doneAction)
+        present(alert, animated: true)
+    }
+
+    func makeTimer() {
+        timer?.invalidate()
+        counter = 59
+        timer = Timer(
+            timeInterval: 1.0,
+            repeats: true,
+            block: { [weak self] _ in
+                guard let self else { return }
+                counter -= 1
+                timerLabel.text = counter <= 0 ? "0" : "\(counter)"
+                if counter <= 0 {
+                    self.timer?.invalidate()
+                    self.timer = nil
+                    showAlert(message: "You spent whole one minute! Take care of your eyes!")
+                }
+            }
+        )
+        guard let timer else { return }
+        RunLoop.main.add(timer, forMode: .common)
     }
 }
 
@@ -256,3 +317,16 @@ extension ProfileViewController: UITableViewDelegate {
         }
     }
 }
+
+//Objective 1:
+
+/*
+ Tasks that can be performed after delay:
+ 
+ 1. Auto data refresh from server (every 30 seconds or more) - for example: weather refresh, new stock data or user posts
+ 
+ 2. Auto logout: after 5 minutes of inactivity the system will log out the user from the profile
+ 
+ 3. Content rotation - new ad banner each 10 seconds (timer)
+ 
+ */

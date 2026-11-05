@@ -39,7 +39,7 @@ class VideoTableViewCell: UITableViewCell {
         videoLabelView.backgroundColor = .clear
         videoLabelView.text = "Video"
         videoLabelView.textColor = .black
-        videoLabelView.font = UIFont.systemFont(ofSize: 14, weight: .bold)
+        videoLabelView.font = UIFont.systemFont(ofSize: 16, weight: .bold)
 
         return videoLabelView
     }()
@@ -47,8 +47,8 @@ class VideoTableViewCell: UITableViewCell {
     private lazy var arrowImageView: UIImageView = {
         let arrowImageView = UIImageView()
         arrowImageView.translatesAutoresizingMaskIntoConstraints = false
+        arrowImageView.image = UIImage(systemName: "arrow.right")
         arrowImageView.backgroundColor = .clear
-        arrowImageView.image = UIImage(named: "arrow.right")
 
         return arrowImageView
     }()

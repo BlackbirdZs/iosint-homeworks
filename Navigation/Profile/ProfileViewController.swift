@@ -219,10 +219,12 @@ class ProfileViewController: UIViewController {
         tableView.estimatedRowHeight = 100
         tableView.register(PostTableViewCell.self, forCellReuseIdentifier: "Base cell")
         tableView.register(PhotosTableViewCell.self, forCellReuseIdentifier: "Photos cell")
+        tableView.register(AudioTableViewCell.self, forCellReuseIdentifier: "audio cell")
+        tableView.register(VideoTableViewCell.self, forCellReuseIdentifier: "video cell")
         tableView.delegate = self
         tableView.dataSource = self
     }
-    
+
     private func showAlert(message: String) {
         let alert = UIAlertController(
             title: "Attention",
@@ -262,19 +264,21 @@ class ProfileViewController: UIViewController {
 
 extension ProfileViewController: UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 3
+        return 3 // 0 - header + photos, 1 - posts , 2 - new cells  -> 1 - new cells, 2 - posts
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if section == 1 {
+        if section == 2 {
             return posts.count
+        } else if section == 1 {
+            return 2
         } else {
             return 1
         }
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        if indexPath.section == 1 {
+        if indexPath.section == 2 {
             guard let cell = tableView.dequeueReusableCell(
                 withIdentifier: "Base cell",
                 for: indexPath
@@ -284,13 +288,27 @@ extension ProfileViewController: UITableViewDataSource {
             let post = posts[indexPath.row]
             cell.configure(with: post)
             return cell
-        } else {
+        } else if indexPath.section == 0 {
             guard let photosCell = tableView.dequeueReusableCell(withIdentifier: "Photos cell", for: indexPath
             ) as? PhotosTableViewCell else {
                 fatalError("could not dequeueReusableCell")
             }
             return photosCell
+        } else if indexPath.section == 1 {
+            if indexPath.row == 0 {
+                guard let audioCell = tableView.dequeueReusableCell(withIdentifier: "audio cell", for: indexPath) as? AudioTableViewCell else {
+                    fatalError("could not dequeueReusableCell")
+                }
+                return audioCell
+            } else if indexPath.row == 1 {
+                guard let videoCell = tableView.dequeueReusableCell(withIdentifier: "video cell", for: indexPath) as?
+                    VideoTableViewCell else {
+                    fatalError("could not dequeueReusableCell")
+                }
+                return videoCell
+            }
         }
+        return UITableViewCell()
     }
 }
 
@@ -314,19 +332,25 @@ extension ProfileViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if indexPath.section == 0 {
             coordinator?.openPhotos()
+        } else if indexPath.section == 1 {
+            if indexPath.row == 0 {
+                coordinator?.openAudio()
+            } else {
+                coordinator?.openVideo()
+            }
         }
     }
 }
 
-//Objective 1:
+// Objective 1:
 
 /*
  Tasks that can be performed after delay:
- 
+
  1. Auto data refresh from server (every 30 seconds or more) - for example: weather refresh, new stock data or user posts
- 
+
  2. Auto logout: after 5 minutes of inactivity the system will log out the user from the profile
- 
+
  3. Content rotation - new ad banner each 10 seconds (timer)
- 
+
  */

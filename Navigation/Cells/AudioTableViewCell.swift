@@ -41,7 +41,7 @@ class AudioTableViewCell: UITableViewCell {
         audioLabelView.backgroundColor = .clear
         audioLabelView.text = "Audio"
         audioLabelView.textColor = .black
-        audioLabelView.font = UIFont.systemFont(ofSize: 14, weight: .bold)
+        audioLabelView.font = UIFont.systemFont(ofSize: 16, weight: .bold)
 
         return audioLabelView
     }()

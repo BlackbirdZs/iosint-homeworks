@@ -8,10 +8,8 @@
 import Foundation
 
 class Checker {
-    static let shared: Checker = {
-        let instance = Checker()
-        return instance
-    }()
+    
+    static let shared = Checker()
 
     private init() {}
 

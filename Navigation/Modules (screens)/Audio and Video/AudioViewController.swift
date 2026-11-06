@@ -17,13 +17,19 @@ class AudioViewController: UIViewController {
     }
 
     var player = AVAudioPlayer()
-    
+
     let tracks = ["track1", "track2", "track3", "track4", "track5"]
     var currentTrackIndex: Int = 0
 
     func loadTrack(at index: Int) {
         player.stop()
-        let songName = tracks[index]
+        let trackName = tracks[index]
+        do {
+            player = try AVAudioPlayer(contentsOf: URL(fileURLWithPath: Bundle.main.path(forResource: trackName, ofType: "mp3")!))
+            player.prepareToPlay()
+        } catch {
+            print("error")
+        }
     }
 
     func setupPlayer() {
@@ -34,6 +40,20 @@ class AudioViewController: UIViewController {
             print("error")
         }
     }
+
+    private lazy var trackLabel: UILabel = {
+        let trackLabel = UILabel()
+        let songName = tracks[currentTrackIndex]
+        trackLabel.translatesAutoresizingMaskIntoConstraints = false
+        trackLabel.clipsToBounds = true
+        trackLabel.layer.cornerRadius = 30
+        trackLabel.font = UIFont.systemFont(ofSize: 20, weight: .bold)
+        trackLabel.textAlignment = .center
+        trackLabel.backgroundColor = .vk
+        trackLabel.textColor = .white
+
+        return trackLabel
+    }()
 
     private lazy var playButton: UIButton = {
         let playButton = UIButton()
@@ -173,7 +193,7 @@ class AudioViewController: UIViewController {
         nextTrackButton.setBackgroundImage(dimmedBluePixel, for: .highlighted)
         nextTrackButton.setBackgroundImage(dimmedBluePixel, for: .selected)
         nextTrackButton.setBackgroundImage(dimmedBluePixel, for: .disabled)
-//        nextTrackButton.addTarget(self, action: #selector(stopButtonTapped), for: .touchUpInside)
+        nextTrackButton.addTarget(self, action: #selector(nextButtonTapped), for: .touchUpInside)
 
         return nextTrackButton
     }()
@@ -193,7 +213,7 @@ class AudioViewController: UIViewController {
         let nextTrackViewEmpty = UIImageView()
         nextTrackViewEmpty.translatesAutoresizingMaskIntoConstraints = false
         nextTrackViewEmpty.image = UIImage(systemName: "forward.fill")
-        nextTrackViewEmpty.isHidden = false
+        nextTrackViewEmpty.isHidden = true
         nextTrackViewEmpty.backgroundColor = .clear
         nextTrackViewEmpty.tintColor = .white
 
@@ -214,7 +234,7 @@ class AudioViewController: UIViewController {
         previousTrackButton.setBackgroundImage(dimmedBluePixel, for: .highlighted)
         previousTrackButton.setBackgroundImage(dimmedBluePixel, for: .selected)
         previousTrackButton.setBackgroundImage(dimmedBluePixel, for: .disabled)
-//        previousTrackButton.addTarget(self, action: #selector(stopButtonTapped), for: .touchUpInside)
+        previousTrackButton.addTarget(self, action: #selector(previousButtonTapped), for: .touchUpInside)
 
         return previousTrackButton
     }()
@@ -234,14 +254,15 @@ class AudioViewController: UIViewController {
         let previousTrackViewFilled = UIImageView()
         previousTrackViewFilled.translatesAutoresizingMaskIntoConstraints = false
         previousTrackViewFilled.image = UIImage(systemName: "backward.fill")
-        previousTrackViewFilled.isHidden = false
+        previousTrackViewFilled.isHidden = true
         previousTrackViewFilled.backgroundColor = .clear
         previousTrackViewFilled.tintColor = .white
 
         return previousTrackViewFilled
     }()
-    
+
     func setupView() {
+        self.title = "Audio"
         view.backgroundColor = .systemGray
     }
 
@@ -251,6 +272,7 @@ class AudioViewController: UIViewController {
         view.addSubview(stopButton)
         view.addSubview(nextTrackButton)
         view.addSubview(previousTrackButton)
+        view.addSubview(trackLabel)
         playButton.addSubview(playImageViewEmpty)
         playButton.addSubview(playImageViewFilled)
         pauseButton.addSubview(pauseImageViewEmpty)
@@ -264,7 +286,14 @@ class AudioViewController: UIViewController {
     }
 
     func setupConstraints() {
+        
         NSLayoutConstraint.activate([
+            
+            trackLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            trackLabel.topAnchor.constraint(equalTo: view.topAnchor,constant: 150),
+            trackLabel.widthAnchor.constraint(equalToConstant: 300),
+            trackLabel.heightAnchor.constraint(equalToConstant: 70),
+            
             playButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 60),
             playButton.centerYAnchor.constraint(equalTo: view.centerYAnchor),
             playButton.widthAnchor.constraint(equalToConstant: 80),
@@ -348,24 +377,62 @@ class AudioViewController: UIViewController {
         setupView()
         addSubviews()
         setupConstraints()
-        setupPlayer()
+        loadTrack(at: 0)
     }
 
     @objc func playButtonTapped() {
         playButtonSetup()
         player.play()
+        updateTrackLabel()
     }
 
     @objc func pauseButtonTapped() {
         pauseButtonSetup()
         player.pause()
+        updateTrackLabel()
     }
 
     @objc func stopButtonTapped() {
         stopButtonSetup()
+        player.currentTime = 0
         player.stop()
+        updateTrackLabel()
     }
-    
+
+    @objc func nextButtonTapped() {
+        nextTrackViewEmpty.isHidden = true
+        nextTrackViewFilled.isHidden = false
+       currentTrackIndex += 1
+        if currentTrackIndex >= tracks.count {
+            currentTrackIndex = 0
+        }
+        loadTrack(at: currentTrackIndex)
+        player.play()
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+            self.nextTrackViewFilled.isHidden = true
+            self.nextTrackViewEmpty.isHidden = false
+        }
+        updateTrackLabel()
+    }
+
+    @objc func previousButtonTapped() {
+        previousTrackViewEmpty.isHidden = true
+        previousTrackViewFilled.isHidden = false
+        currentTrackIndex -= 1
+        if currentTrackIndex < 0 {
+           currentTrackIndex = tracks.count - 1
+        }
+        loadTrack(at: currentTrackIndex)
+        player.play()
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+            self.previousTrackViewFilled.isHidden = true
+            self.previousTrackViewEmpty.isHidden = false
+        }
+        updateTrackLabel()
+    }
+
     func playButtonSetup() {
         playImageViewEmpty.isHidden = true
         playImageViewFilled.isHidden = false
@@ -391,5 +458,14 @@ class AudioViewController: UIViewController {
         playImageViewFilled.isHidden = true
         pauseImageViewEmpty.isHidden = false
         pauseImageViewFilled.isHidden = true
+    }
+
+    func updateTrackLabel() {
+        let currentTrackName = tracks[currentTrackIndex]
+        if player.isPlaying {
+            trackLabel.text = "Now playing: \(currentTrackName)"
+        } else {
+            trackLabel.text = "Paused: \(currentTrackName)"
+        }
     }
 }

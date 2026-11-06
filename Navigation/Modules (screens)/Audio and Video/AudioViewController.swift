@@ -16,6 +16,25 @@ class AudioViewController: UIViewController {
         }
     }
 
+    var player = AVAudioPlayer()
+    
+    let tracks = ["track1", "track2", "track3", "track4", "track5"]
+    var currentTrackIndex: Int = 0
+
+    func loadTrack(at index: Int) {
+        player.stop()
+        let songName = tracks[index]
+    }
+
+    func setupPlayer() {
+        do {
+            player = try AVAudioPlayer(contentsOf: URL(fileURLWithPath: Bundle.main.path(forResource: "track1", ofType: "mp3")!))
+            player.prepareToPlay()
+        } catch {
+            print("error")
+        }
+    }
+
     private lazy var playButton: UIButton = {
         let playButton = UIButton()
         playButton.translatesAutoresizingMaskIntoConstraints = false
@@ -139,7 +158,89 @@ class AudioViewController: UIViewController {
 
         return stopImageViewFilled
     }()
+    
+    private lazy var nextTrackButton: UIButton = {
+        let nextTrackButton = UIButton()
+        nextTrackButton.translatesAutoresizingMaskIntoConstraints = false
+        nextTrackButton.clipsToBounds = true
+        nextTrackButton.layer.cornerRadius = 20
+        
+        guard let bluePixel = UIImage(named: "bluePixel") else {
+            return nextTrackButton
+        }
+        let dimmedBluePixel = imageWithAlpha(bluePixel, alpha: 0.8)
+        nextTrackButton.setBackgroundImage(bluePixel, for: .normal)
+        nextTrackButton.setBackgroundImage(dimmedBluePixel, for: .highlighted)
+        nextTrackButton.setBackgroundImage(dimmedBluePixel, for: .selected)
+        nextTrackButton.setBackgroundImage(dimmedBluePixel, for: .disabled)
+//        nextTrackButton.addTarget(self, action: #selector(stopButtonTapped), for: .touchUpInside)
 
+        return nextTrackButton
+    }()
+
+    private lazy var nextTrackViewEmpty: UIImageView = {
+        let nextTrackViewEmpty = UIImageView()
+        nextTrackViewEmpty.translatesAutoresizingMaskIntoConstraints = false
+        nextTrackViewEmpty.image = UIImage(systemName: "forward")
+        nextTrackViewEmpty.isHidden = false
+        nextTrackViewEmpty.backgroundColor = .clear
+        nextTrackViewEmpty.tintColor = .white
+
+        return nextTrackViewEmpty
+    }()
+    
+    private lazy var nextTrackViewFilled: UIImageView = {
+        let nextTrackViewEmpty = UIImageView()
+        nextTrackViewEmpty.translatesAutoresizingMaskIntoConstraints = false
+        nextTrackViewEmpty.image = UIImage(systemName: "forward.fill")
+        nextTrackViewEmpty.isHidden = false
+        nextTrackViewEmpty.backgroundColor = .clear
+        nextTrackViewEmpty.tintColor = .white
+
+        return nextTrackViewEmpty
+    }()
+    
+    private lazy var previousTrackButton: UIButton = {
+        let previousTrackButton = UIButton()
+        previousTrackButton.translatesAutoresizingMaskIntoConstraints = false
+        previousTrackButton.clipsToBounds = true
+        previousTrackButton.layer.cornerRadius = 20
+        
+        guard let bluePixel = UIImage(named: "bluePixel") else {
+            return previousTrackButton
+        }
+        let dimmedBluePixel = imageWithAlpha(bluePixel, alpha: 0.8)
+        previousTrackButton.setBackgroundImage(bluePixel, for: .normal)
+        previousTrackButton.setBackgroundImage(dimmedBluePixel, for: .highlighted)
+        previousTrackButton.setBackgroundImage(dimmedBluePixel, for: .selected)
+        previousTrackButton.setBackgroundImage(dimmedBluePixel, for: .disabled)
+//        previousTrackButton.addTarget(self, action: #selector(stopButtonTapped), for: .touchUpInside)
+
+        return previousTrackButton
+    }()
+
+    private lazy var previousTrackViewEmpty: UIImageView = {
+        let nextTrackViewEmpty = UIImageView()
+        nextTrackViewEmpty.translatesAutoresizingMaskIntoConstraints = false
+        nextTrackViewEmpty.image = UIImage(systemName: "backward")
+        nextTrackViewEmpty.isHidden = false
+        nextTrackViewEmpty.backgroundColor = .clear
+        nextTrackViewEmpty.tintColor = .white
+
+        return nextTrackViewEmpty
+    }()
+
+    private lazy var previousTrackViewFilled: UIImageView = {
+        let previousTrackViewFilled = UIImageView()
+        previousTrackViewFilled.translatesAutoresizingMaskIntoConstraints = false
+        previousTrackViewFilled.image = UIImage(systemName: "backward.fill")
+        previousTrackViewFilled.isHidden = false
+        previousTrackViewFilled.backgroundColor = .clear
+        previousTrackViewFilled.tintColor = .white
+
+        return previousTrackViewFilled
+    }()
+    
     func setupView() {
         view.backgroundColor = .systemGray
     }
@@ -148,12 +249,18 @@ class AudioViewController: UIViewController {
         view.addSubview(playButton)
         view.addSubview(pauseButton)
         view.addSubview(stopButton)
+        view.addSubview(nextTrackButton)
+        view.addSubview(previousTrackButton)
         playButton.addSubview(playImageViewEmpty)
         playButton.addSubview(playImageViewFilled)
         pauseButton.addSubview(pauseImageViewEmpty)
         pauseButton.addSubview(pauseImageViewFilled)
         stopButton.addSubview(stopImageViewEmpty)
         stopButton.addSubview(stopImageViewFilled)
+        nextTrackButton.addSubview(nextTrackViewEmpty)
+        nextTrackButton.addSubview(nextTrackViewFilled)
+        previousTrackButton.addSubview(previousTrackViewEmpty)
+        previousTrackButton.addSubview(previousTrackViewFilled)
     }
 
     func setupConstraints() {
@@ -202,6 +309,36 @@ class AudioViewController: UIViewController {
             stopImageViewFilled.heightAnchor.constraint(equalTo: stopImageViewFilled.widthAnchor),
             stopImageViewFilled.centerXAnchor.constraint(equalTo: stopButton.centerXAnchor),
             stopImageViewFilled.centerYAnchor.constraint(equalTo: stopButton.centerYAnchor),
+            
+            previousTrackButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 110),
+            previousTrackButton.widthAnchor.constraint(equalTo: playButton.widthAnchor),
+            previousTrackButton.heightAnchor.constraint(equalTo: playButton.widthAnchor),
+            previousTrackButton.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: 100),
+            
+            previousTrackViewEmpty.widthAnchor.constraint(equalToConstant: 30),
+            previousTrackViewEmpty.heightAnchor.constraint(equalTo: previousTrackViewEmpty.widthAnchor),
+            previousTrackViewEmpty.centerXAnchor.constraint(equalTo: previousTrackButton.centerXAnchor),
+            previousTrackViewEmpty.centerYAnchor.constraint(equalTo: previousTrackButton.centerYAnchor),
+
+            previousTrackViewFilled.widthAnchor.constraint(equalToConstant: 30),
+            previousTrackViewFilled.heightAnchor.constraint(equalTo: previousTrackViewFilled.widthAnchor),
+            previousTrackViewFilled.centerXAnchor.constraint(equalTo: previousTrackButton.centerXAnchor),
+            previousTrackViewFilled.centerYAnchor.constraint(equalTo: previousTrackButton.centerYAnchor),
+            
+            nextTrackButton.leadingAnchor.constraint(equalTo: previousTrackButton.trailingAnchor, constant: 30),
+            nextTrackButton.widthAnchor.constraint(equalTo: playButton.widthAnchor),
+            nextTrackButton.heightAnchor.constraint(equalTo: playButton.widthAnchor),
+            nextTrackButton.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: 100),
+            
+            nextTrackViewEmpty.widthAnchor.constraint(equalToConstant: 30),
+            nextTrackViewEmpty.heightAnchor.constraint(equalTo: nextTrackViewEmpty.widthAnchor),
+            nextTrackViewEmpty.centerXAnchor.constraint(equalTo: nextTrackButton.centerXAnchor),
+            nextTrackViewEmpty.centerYAnchor.constraint(equalTo: nextTrackButton.centerYAnchor),
+
+            nextTrackViewFilled.widthAnchor.constraint(equalToConstant: 30),
+            nextTrackViewFilled.heightAnchor.constraint(equalTo: nextTrackViewEmpty.widthAnchor),
+            nextTrackViewFilled.centerXAnchor.constraint(equalTo: nextTrackButton.centerXAnchor),
+            nextTrackViewFilled.centerYAnchor.constraint(equalTo: nextTrackButton.centerYAnchor),
         ])
     }
 
@@ -211,20 +348,24 @@ class AudioViewController: UIViewController {
         setupView()
         addSubviews()
         setupConstraints()
+        setupPlayer()
     }
 
     @objc func playButtonTapped() {
         playButtonSetup()
+        player.play()
     }
 
     @objc func pauseButtonTapped() {
         pauseButtonSetup()
+        player.pause()
     }
 
     @objc func stopButtonTapped() {
         stopButtonSetup()
+        player.stop()
     }
-
+    
     func playButtonSetup() {
         playImageViewEmpty.isHidden = true
         playImageViewFilled.isHidden = false

@@ -163,7 +163,7 @@ class AudioRecordViewController: UIViewController {
             AVNumberOfChannelsKey: 2,
             AVEncoderAudioQualityKey: AVAudioQuality.high.rawValue,
         ]
-     audioRecorder = try? AVAudioRecorder(url: recordUrl!, settings: settings)
+        audioRecorder = try? AVAudioRecorder(url: recordUrl!, settings: settings)
         audioRecorder?.record()
         recordButtonSetup()
     }
@@ -295,8 +295,8 @@ class AudioRecordViewController: UIViewController {
     }
 
     @objc func playButtonTapped() {
-       guard let recordUrl else { return }
-        
+        guard let recordUrl else { return }
+
         do {
             audioPlayer = try AVAudioPlayer(contentsOf: recordUrl)
             audioPlayer?.play()

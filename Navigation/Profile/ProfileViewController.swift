@@ -265,7 +265,7 @@ class ProfileViewController: UIViewController {
 
 extension ProfileViewController: UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 3 // 0 - header + photos, 1 - posts , 2 - new cells  -> 1 - new cells, 2 - posts,
+        return 3 // 0 - header + photos, 1 - posts , 2 - new cells  -> 1 - new cells, 2 - posts
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

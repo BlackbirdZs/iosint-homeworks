@@ -221,6 +221,7 @@ class ProfileViewController: UIViewController {
         tableView.register(PhotosTableViewCell.self, forCellReuseIdentifier: "Photos cell")
         tableView.register(AudioTableViewCell.self, forCellReuseIdentifier: "audio cell")
         tableView.register(VideoTableViewCell.self, forCellReuseIdentifier: "video cell")
+        tableView.register(AudioRecorderTableViewCell.self, forCellReuseIdentifier: "audio recorder cell")
         tableView.delegate = self
         tableView.dataSource = self
     }
@@ -264,14 +265,14 @@ class ProfileViewController: UIViewController {
 
 extension ProfileViewController: UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 3 // 0 - header + photos, 1 - posts , 2 - new cells  -> 1 - new cells, 2 - posts
+        return 3 // 0 - header + photos, 1 - posts , 2 - new cells  -> 1 - new cells, 2 - posts,
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if section == 2 {
             return posts.count
         } else if section == 1 {
-            return 2
+            return 3
         } else {
             return 1
         }
@@ -306,6 +307,11 @@ extension ProfileViewController: UITableViewDataSource {
                     fatalError("could not dequeueReusableCell")
                 }
                 return videoCell
+            } else {
+                guard let audioRecordCell = tableView.dequeueReusableCell(withIdentifier: "audio recorder cell", for: indexPath) as? AudioRecorderTableViewCell else {
+                    fatalError("could not dequeueReusableCell")
+                }
+                return audioRecordCell
             }
         }
         return UITableViewCell()
@@ -335,8 +341,10 @@ extension ProfileViewController: UITableViewDelegate {
         } else if indexPath.section == 1 {
             if indexPath.row == 0 {
                 coordinator?.openAudio()
-            } else {
+            } else if indexPath.row == 1 {
                 coordinator?.openVideo()
+            } else {
+                coordinator?.openAudioRecorder()
             }
         }
     }

@@ -178,13 +178,13 @@ class AudioViewController: UIViewController {
 
         return stopImageViewFilled
     }()
-    
+
     private lazy var nextTrackButton: UIButton = {
         let nextTrackButton = UIButton()
         nextTrackButton.translatesAutoresizingMaskIntoConstraints = false
         nextTrackButton.clipsToBounds = true
         nextTrackButton.layer.cornerRadius = 20
-        
+
         guard let bluePixel = UIImage(named: "bluePixel") else {
             return nextTrackButton
         }
@@ -208,7 +208,7 @@ class AudioViewController: UIViewController {
 
         return nextTrackViewEmpty
     }()
-    
+
     private lazy var nextTrackViewFilled: UIImageView = {
         let nextTrackViewEmpty = UIImageView()
         nextTrackViewEmpty.translatesAutoresizingMaskIntoConstraints = false
@@ -219,13 +219,13 @@ class AudioViewController: UIViewController {
 
         return nextTrackViewEmpty
     }()
-    
+
     private lazy var previousTrackButton: UIButton = {
         let previousTrackButton = UIButton()
         previousTrackButton.translatesAutoresizingMaskIntoConstraints = false
         previousTrackButton.clipsToBounds = true
         previousTrackButton.layer.cornerRadius = 20
-        
+
         guard let bluePixel = UIImage(named: "bluePixel") else {
             return previousTrackButton
         }
@@ -262,7 +262,7 @@ class AudioViewController: UIViewController {
     }()
 
     func setupView() {
-        self.title = "Audio"
+        title = "Audio"
         view.backgroundColor = .systemGray
     }
 
@@ -286,14 +286,12 @@ class AudioViewController: UIViewController {
     }
 
     func setupConstraints() {
-        
         NSLayoutConstraint.activate([
-            
             trackLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            trackLabel.topAnchor.constraint(equalTo: view.topAnchor,constant: 150),
+            trackLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 150),
             trackLabel.widthAnchor.constraint(equalToConstant: 300),
             trackLabel.heightAnchor.constraint(equalToConstant: 70),
-            
+
             playButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 60),
             playButton.centerYAnchor.constraint(equalTo: view.centerYAnchor),
             playButton.widthAnchor.constraint(equalToConstant: 80),
@@ -338,12 +336,12 @@ class AudioViewController: UIViewController {
             stopImageViewFilled.heightAnchor.constraint(equalTo: stopImageViewFilled.widthAnchor),
             stopImageViewFilled.centerXAnchor.constraint(equalTo: stopButton.centerXAnchor),
             stopImageViewFilled.centerYAnchor.constraint(equalTo: stopButton.centerYAnchor),
-            
+
             previousTrackButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 110),
             previousTrackButton.widthAnchor.constraint(equalTo: playButton.widthAnchor),
             previousTrackButton.heightAnchor.constraint(equalTo: playButton.widthAnchor),
             previousTrackButton.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: 100),
-            
+
             previousTrackViewEmpty.widthAnchor.constraint(equalToConstant: 30),
             previousTrackViewEmpty.heightAnchor.constraint(equalTo: previousTrackViewEmpty.widthAnchor),
             previousTrackViewEmpty.centerXAnchor.constraint(equalTo: previousTrackButton.centerXAnchor),
@@ -353,12 +351,12 @@ class AudioViewController: UIViewController {
             previousTrackViewFilled.heightAnchor.constraint(equalTo: previousTrackViewFilled.widthAnchor),
             previousTrackViewFilled.centerXAnchor.constraint(equalTo: previousTrackButton.centerXAnchor),
             previousTrackViewFilled.centerYAnchor.constraint(equalTo: previousTrackButton.centerYAnchor),
-            
+
             nextTrackButton.leadingAnchor.constraint(equalTo: previousTrackButton.trailingAnchor, constant: 30),
             nextTrackButton.widthAnchor.constraint(equalTo: playButton.widthAnchor),
             nextTrackButton.heightAnchor.constraint(equalTo: playButton.widthAnchor),
             nextTrackButton.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: 100),
-            
+
             nextTrackViewEmpty.widthAnchor.constraint(equalToConstant: 30),
             nextTrackViewEmpty.heightAnchor.constraint(equalTo: nextTrackViewEmpty.widthAnchor),
             nextTrackViewEmpty.centerXAnchor.constraint(equalTo: nextTrackButton.centerXAnchor),
@@ -402,13 +400,13 @@ class AudioViewController: UIViewController {
     @objc func nextButtonTapped() {
         nextTrackViewEmpty.isHidden = true
         nextTrackViewFilled.isHidden = false
-       currentTrackIndex += 1
+        currentTrackIndex += 1
         if currentTrackIndex >= tracks.count {
             currentTrackIndex = 0
         }
         loadTrack(at: currentTrackIndex)
         player.play()
-        
+
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
             self.nextTrackViewFilled.isHidden = true
             self.nextTrackViewEmpty.isHidden = false
@@ -421,11 +419,11 @@ class AudioViewController: UIViewController {
         previousTrackViewFilled.isHidden = false
         currentTrackIndex -= 1
         if currentTrackIndex < 0 {
-           currentTrackIndex = tracks.count - 1
+            currentTrackIndex = tracks.count - 1
         }
         loadTrack(at: currentTrackIndex)
         player.play()
-        
+
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
             self.previousTrackViewFilled.isHidden = true
             self.previousTrackViewEmpty.isHidden = false

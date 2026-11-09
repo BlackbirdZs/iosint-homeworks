@@ -5,9 +5,9 @@
 //  Created by Anton Kruglov on 09.11.2026.
 //
 
+import AVFoundation
 import Foundation
 import UIKit
-import AVFoundation
 
 class AudioRecordViewController: UIViewController {
     private func imageWithAlpha(_ image: UIImage, alpha: CGFloat) -> UIImage {
@@ -15,13 +15,17 @@ class AudioRecordViewController: UIViewController {
         return renderer.image { _ in image.draw(at: .zero, blendMode: .normal, alpha: alpha)
         }
     }
-    
+
+    var audioRecorder: AVAudioRecorder?
+    var audioPlayer: AVAudioPlayer?
+    var recordUrl: URL?
+
     private lazy var recordButton: UIButton = {
         let recordButton = UIButton()
         recordButton.translatesAutoresizingMaskIntoConstraints = false
         recordButton.clipsToBounds = true
         recordButton.layer.cornerRadius = 30
-        
+
         guard let bluePixel = UIImage(named: "bluePixel") else {
             return recordButton
         }
@@ -141,7 +145,31 @@ class AudioRecordViewController: UIViewController {
         return stopImageViewFilled
     }()
 
+    private func saveRecord() -> URL {
+        let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+        let fileName = UUID().uuidString + ".m4a"
+        let fileURL = documentsDirectory.appendingPathComponent(fileName)
+
+        return fileURL
+    }
+
+    private func startRecording() {
+        recordUrl = saveRecord()
+        try? AVAudioSession.sharedInstance().setCategory(AVAudioSession.Category.playAndRecord, mode: .default)
+        try? AVAudioSession.sharedInstance().setActive(true)
+        let settings = [
+            AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
+            AVSampleRateKey: 44100,
+            AVNumberOfChannelsKey: 2,
+            AVEncoderAudioQualityKey: AVAudioQuality.high.rawValue,
+        ]
+     audioRecorder = try? AVAudioRecorder(url: recordUrl!, settings: settings)
+        audioRecorder?.record()
+        recordButtonSetup()
+    }
+
     func setupView() {
+        title = "Audio recorder"
         view.backgroundColor = .systemGray
     }
 
@@ -213,18 +241,6 @@ class AudioRecordViewController: UIViewController {
         setupConstraints()
     }
 
-    @objc func playButtonTapped() {
-        playButtonSetup()
-    }
-
-    @objc func recordButtonTapped() {
-        recordButtonSetup()
-    }
-
-    @objc func stopButtonTapped() {
-        stopButtonSetup()
-    }
-
     func recordButtonSetup() {
         recordImageViewEmpty.isHidden = true
         recordImageViewFilled.isHidden = false
@@ -250,5 +266,49 @@ class AudioRecordViewController: UIViewController {
         stopImageViewFilled.isHidden = false
         playImageViewEmpty.isHidden = false
         playImageViewFilled.isHidden = true
+    }
+
+    private func showAlert(message: String) {
+        let alert = UIAlertController(
+            title: "Attention",
+            message: message,
+            preferredStyle: .alert
+        )
+        let doneAction = UIAlertAction(
+            title: "Done",
+            style: .default
+        )
+        alert.addAction(doneAction)
+        present(alert, animated: true)
+    }
+
+    @objc func recordButtonTapped() {
+        AVAudioSession.sharedInstance().requestRecordPermission { [weak self] granted in
+            DispatchQueue.main.async {
+                if granted {
+                    self?.startRecording()
+                } else {
+                    self?.showAlert(message: "Please, enable microphone access in settings")
+                }
+            }
+        }
+    }
+
+    @objc func playButtonTapped() {
+       guard let recordUrl else { return }
+        
+        do {
+            audioPlayer = try AVAudioPlayer(contentsOf: recordUrl)
+            audioPlayer?.play()
+        } catch {
+            print(error.localizedDescription)
+        }
+        playButtonSetup()
+    }
+
+    @objc func stopButtonTapped() {
+        audioRecorder?.stop()
+        audioPlayer?.stop()
+        stopButtonSetup()
     }
 }

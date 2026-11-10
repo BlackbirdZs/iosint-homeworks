@@ -27,4 +27,19 @@ class ProfileCoordinator: Coordinator {
         let photosVc = PhotosViewController()
         navigationController.pushViewController(photosVc, animated: true)
     }
+    
+    func openAudio() {
+        let audioVc = AudioViewController()
+        navigationController.pushViewController(audioVc, animated: true)
+    }
+    
+    func openVideo() {
+        let videoVc = VideoViewController()
+        navigationController.pushViewController(videoVc,animated: true)
+    }
+
+    func openAudioRecorder() {
+        let audioRecordVc = AudioRecordViewController()
+        navigationController.pushViewController(audioRecordVc,animated: true)
+    }
 }
